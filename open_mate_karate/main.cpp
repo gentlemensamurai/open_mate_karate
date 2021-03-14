@@ -1,51 +1,105 @@
 #include "libs.h"
 
-void framebufferResizeCallback(GLFWwindow* window, int fbW, int fbH)
-{
-    glViewport(0, 0, fbW, fbH);
-}
+const char* TITLE { "Open Mate Karate" };
+const int WINDOW_WIDTH { 1280 };
+const int WINDOW_HIGHT { 720 };
+const bool fullscreen { false };
+
+void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
+void showFPS(GLFWwindow* window);
 
 int main()
 {
-    glfwInit();
+    if (!glfwInit())
+    {
+        std::cerr << "GLFW initialization failed!" << std::endl;
+        return -1;
+    }
 
-    const int WINDOW_WIDTH = 640;
-    const int WINDOW_HEIGHT = 480;
-    int framebufferWidth = 0;
-    int framebufferHeight = 0;
-
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
-    glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Open Mate Karate", nullptr, nullptr);
+    GLFWwindow* window { nullptr };
 
-    glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
-    glfwGetFramebufferSize(window, &framebufferWidth, &framebufferWidth);
-    glViewport(0, 0, framebufferWidth, framebufferHeight);
+    if (!fullscreen)
+    {
+        window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HIGHT, TITLE, nullptr, nullptr);
+    }
+    else
+    {
+        GLFWmonitor* monitor { glfwGetPrimaryMonitor() };
+        const GLFWvidmode* vidmode { glfwGetVideoMode(monitor) };
+
+        if (vidmode != nullptr)
+        {
+            window = glfwCreateWindow(vidmode->width, vidmode->height, TITLE, monitor, nullptr);
+        }
+    }
+
+    if (window == nullptr)
+    {
+        std::cerr << "Failed to create GLFW window!" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
     glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, glfw_onKey);
 
     glewExperimental = GL_TRUE;
 
-    if(glewInit() != GLEW_OK)
+    if (glewInit() != GLEW_OK)
     {
-        std::cout << "Error: Glew init failed!" << std::endl;
-        glfwTerminate();
+        std::cerr << "GLEW initialization failed!" << std::endl;
+        return -1;
     }
 
-    while(!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))
     {
+        showFPS(window);
         glfwPollEvents();
 
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+        glClearColor(0.23f, 0.38f, 0.47f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         glfwSwapBuffers(window);
-        glFlush();
     }
 
     glfwTerminate();
-
     return 0;
+}
+
+void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
+{
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    }
+}
+
+void showFPS(GLFWwindow* window)
+{
+    static double previousSeconds { 0.0 };
+    static int frameCount { 0 };
+
+    double currentSeconds { glfwGetTime() };
+    double elapsedSeconds { currentSeconds - previousSeconds };
+
+    if (elapsedSeconds > 0.25)
+    {
+        previousSeconds = currentSeconds;
+        double fps { static_cast<double>(frameCount) / elapsedSeconds };
+        double msPerFrame { 1000.0 / fps };
+
+        std::ostringstream outs;
+        outs.precision(3);
+        outs << std::fixed << TITLE << " (FPS: " << fps << ", frame time: " << msPerFrame << " ms)";
+        glfwSetWindowTitle(window, outs.str().c_str());
+
+        frameCount = 0;
+    }
+
+    frameCount++;
 }
