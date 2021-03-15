@@ -42,6 +42,8 @@ bool ShaderProgram::loadShaders(const std::string& vertShaderFilename, const std
 
     checkCompileErrors(handle, PROGRAM);
 
+    uniformLocations.clear();
+
     glDeleteShader(vertShader);
     glDeleteShader(fragShader);
 
@@ -54,6 +56,24 @@ void ShaderProgram::use()
     {
         glUseProgram(handle);
     }
+}
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec2& v)
+{
+    GLint loc { getUniformLocation(name) };
+    glUniform2f(loc, v.x, v.y);
+}
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec3& v)
+{
+    GLint loc { getUniformLocation(name) };
+    glUniform3f(loc, v.x, v.y, v.z);
+}
+
+void ShaderProgram::setUniform(const GLchar* name, const glm::vec4& v)
+{
+    GLint loc { getUniformLocation(name) };
+    glUniform4f(loc, v.x, v.y, v.z, v.w);
 }
 
 std::string ShaderProgram::fileToString(const std::string& filename)
@@ -118,4 +138,16 @@ void ShaderProgram::checkCompileErrors(GLuint shader, ShaderType type)
             std::cerr << "Error! Shader failed to compile! " << errorLog << std::endl;
         }
     }
+}
+
+GLint ShaderProgram::getUniformLocation(const GLchar* name)
+{
+    std::map<std::string, GLint>::iterator it { uniformLocations.find(name) };
+
+    if (it == uniformLocations.end())
+    {
+        uniformLocations[name] = glGetUniformLocation(handle, name);
+    }
+
+    return uniformLocations[name];
 }

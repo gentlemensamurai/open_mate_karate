@@ -2,7 +2,9 @@
 #define SHADER_PROGRAM_H
 
 #include <string>
+#include <map>
 #include <glew.h>
+#include <glm.hpp>
 
 class ShaderProgram
 {
@@ -21,13 +23,18 @@ public:
     bool loadShaders(const std::string& vertShaderFilename, const std::string& fragShaderFilename);
     void use();
 
+    void setUniform(const GLchar* name, const glm::vec2& v);
+    void setUniform(const GLchar* name, const glm::vec3& v);
+    void setUniform(const GLchar* name, const glm::vec4& v);
+
 private:
 
     GLuint handle;
+    std::map<std::string, GLint> uniformLocations;
 
     std::string fileToString(const std::string& filename);
     void checkCompileErrors(GLuint shader, ShaderType type);
-
+    GLint getUniformLocation(const GLchar* name);
 };
 
 #endif // SHADER_PROGRAM_H
