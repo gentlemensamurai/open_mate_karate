@@ -1,4 +1,5 @@
-#pragma once
+#ifndef LIBS_H
+#define LIBS_H
 
 #include <iostream>
 #include <sstream>
@@ -15,3 +16,5 @@
 #include <gtc/type_ptr.hpp>
 
 #include <SOIL2.h>
+
+#endif // LIBS_H

@@ -1,30 +1,10 @@
 #include "libs.h"
+#include "ShaderProgram.h"
 
 const char* TITLE { "Open Mate Karate" };
 const int WINDOW_WIDTH { 800 };
 const int WINDOW_HIGHT { 600 };
 const bool fullscreen { false };
-
-const GLchar* vertShaderSrc
-{
-    "#version 330 core\n"
-    "layout (location = 0) in vec3 pos;\n"
-    "out vec3 vertColor;\n"
-    "void main()\n"
-    "{\n"
-    "   gl_Position = vec4(pos.x, pos.y, pos.z, 1.0);\n"
-    "}\n"
-};
-
-const GLchar* fragShaderSrc
-{
-    "#version 330 core\n"
-    "out vec4 fragColor;\n"
-    "void main()\n"
-    "{\n"
-    "   fragColor = vec4(0.75f, 0.35f, 0.65f, 1.0f);\n"
-    "}\n"
-};
 
 GLFWwindow* window { nullptr };
 bool wireframe { false };
@@ -76,60 +56,10 @@ int main()
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    // VERTEX SHADER
-
-    GLuint vertShader { glCreateShader(GL_VERTEX_SHADER) };
-
-    glShaderSource(vertShader, 1, &vertShaderSrc, nullptr);
-    glCompileShader(vertShader);
-
-    GLint result;
-    GLchar infoLog[512];
-
-    glGetShaderiv(vertShader, GL_COMPILE_STATUS, &result);
-
-    if (!result)
-    {
-        glGetShaderInfoLog(vertShader, sizeof(infoLog), nullptr, infoLog);
-        std::cout << "Error! Vertex shader failed to compile!" << std::endl;
-        std::cout << infoLog << std::endl;
-    }
-
-    // FRAGMENT SHADER
-
-    GLuint fragShader { glCreateShader(GL_FRAGMENT_SHADER) };
-
-    glShaderSource(fragShader, 1, &fragShaderSrc, nullptr);
-    glCompileShader(fragShader);
-
-    glGetShaderiv(fragShader, GL_COMPILE_STATUS, &result);
-
-    if (!result)
-    {
-        glGetShaderInfoLog(vertShader, sizeof(infoLog), nullptr, infoLog);
-        std::cout << "Error! Fragment shader failed to compile!" << std::endl;
-        std::cout << infoLog << std::endl;
-    }
-
     // SHADER PROGRAM
 
-    GLuint shaderProgram { glCreateProgram() };
-
-    glAttachShader(shaderProgram, vertShader);
-    glAttachShader(shaderProgram, fragShader);
-    glLinkProgram(shaderProgram);
-
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &result);
-
-    if (!result)
-    {
-        glGetProgramInfoLog(shaderProgram, sizeof(infoLog), nullptr, infoLog);\
-        std::cout << "Error! Shader program linker failure!" << std::endl;
-        std::cout << infoLog << std::endl;
-    }
-
-    glDeleteShader(vertShader);
-    glDeleteShader(fragShader);
+    ShaderProgram shaderProgram;
+    shaderProgram.loadShaders("shaders/basic.vert", "shaders/basic.frag");
 
     // MAIN LOOP
 
@@ -141,7 +71,7 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(shaderProgram);
+        shaderProgram.use();
 
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -150,7 +80,6 @@ int main()
         glfwSwapBuffers(window);
     }
 
-    glDeleteProgram(shaderProgram);
     glDeleteVertexArrays(1, &vao);
     glDeleteBuffers(1, &vbo);
     glfwTerminate();
