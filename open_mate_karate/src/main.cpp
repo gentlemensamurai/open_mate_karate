@@ -1,10 +1,11 @@
 #include "libs.h"
 #include "ShaderProgram.h"
+#include "Texture2D.h"
 
-const char* TITLE { "Open Mate Karate" };
-const int WINDOW_WIDTH { 800 };
-const int WINDOW_HIGHT { 600 };
-const bool fullscreen { false };
+const char* const TITLE { "Open Mate Karate" };
+constexpr int WINDOW_WIDTH { 800 };
+constexpr int WINDOW_HIGHT { 600 };
+constexpr bool fullscreen { false };
 
 GLFWwindow* window { nullptr };
 bool wireframe { false };
@@ -23,10 +24,11 @@ int main()
 
     GLfloat vertices[]
     {
-        -0.5f,  0.5f, 0.0f,
-         0.5f,  0.5f, 0.0f,
-         0.5f, -0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f
+         // POSITION        // TEXTURE COORDINATES
+        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, // TOP LEFT
+         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // TOP RIGHT
+         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // BOTTOM RIGHT
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f  // BOTTOM LEFT
     };
 
     GLuint indices[]
@@ -48,21 +50,25 @@ int main()
     glBindVertexArray(vao);
 
     // POSITION
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), nullptr);
     glEnableVertexAttribArray(0);
+
+    // TEXTURE COORDINATES
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (const void*)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
 
     glGenBuffers(1, &ibo);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // SHADER PROGRAM
-
     ShaderProgram shaderProgram;
     shaderProgram.loadShaders("shaders/basic.vert", "shaders/basic.frag");
 
-    // MAIN LOOP
+    Texture2D texture;
+    texture.loadTexture("textures/texture.jpg", true);
 
+    // MAIN LOOP
     while (!glfwWindowShouldClose(window))
     {
         showFPS(window);
@@ -71,17 +77,8 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT);
 
+        texture.bind();
         shaderProgram.use();
-
-        GLfloat time = glfwGetTime();
-        GLfloat blueColor { (sin(time) / 2) + 0.5f };
-
-        glm::vec2 posOffset;
-        posOffset.x = sin(time) / 2;
-        posOffset.y = cos(time) / 2;
-
-        shaderProgram.setUniform("vertColor", glm::vec4(0.0f, 0.0f, blueColor, 1.0f));
-        shaderProgram.setUniform("posOffset", posOffset);
 
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
