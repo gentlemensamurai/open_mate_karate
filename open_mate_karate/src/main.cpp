@@ -145,7 +145,7 @@ int main()
         glm::vec3 up(0.0f, 1.0f, 0.0f);
         
         view = glm::lookAt(camPos, targetPos, up);
-        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.f);
+        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.f);
 
         shaderProgram.use();
 
