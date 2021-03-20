@@ -7,7 +7,7 @@ constexpr bool fullscreen { false };
 constexpr float mouseSensitivity { 0.25f };
 const std::string windowTitle { "Open Mate Karate" };
 const std::string texPathCrate { "textures/crate.jpg" };
-const std::string texPathGrid { "textures/grid.jpg" };
+const std::string texPathGround { "textures/ground.jpg" };
 
 int windowWidth { 1920 };
 int windowHeight { 1080 };
@@ -114,8 +114,8 @@ int main()
     Texture2D texCrate;
     texCrate.loadTexture(texPathCrate, true);
 
-    //Texture2D texGrid;
-    //texGrid.loadTexture(texPathGrid, true);
+    Texture2D texGround;
+    texGround.loadTexture(texPathGround, true);
 
     float cubeAngle { 0.0f };
     double lastTime { glfwGetTime() };
@@ -132,7 +132,6 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         texCrate.bind(0);
-        //texLeaves.bind(1);
 
         glm::mat4 model(1.0f);
         glm::mat4 view(1.0f);
@@ -154,10 +153,17 @@ int main()
 
         glBindVertexArray(vao);
         glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        texGround.bind(0);
+        glm::vec3 floorPos(0.0f, -1.0f, 0.0f);
+        model = glm::translate(model, floorPos) * glm::scale(model, glm::vec3(10.0f, 0.01f, 10.0f));
+
+        shaderProgram.setUniform("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);
-
         lastTime = currentTime;
     }
 
