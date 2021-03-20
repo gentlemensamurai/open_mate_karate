@@ -76,6 +76,11 @@ void ShaderProgram::setUniform(const GLchar* name, const glm::vec4& v)
     glUniform4f(loc, v.x, v.y, v.z, v.w);
 }
 
+GLuint ShaderProgram::getProgram() const
+{
+    return handle;
+}
+
 std::string ShaderProgram::fileToString(const std::string& filename)
 {
     std::stringstream ss;

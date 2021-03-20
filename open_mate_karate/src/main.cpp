@@ -2,10 +2,12 @@
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 
-const char* const TITLE { "Open Mate Karate" };
-constexpr int WINDOW_WIDTH { 800 };
-constexpr int WINDOW_HIGHT { 600 };
+constexpr int windowWidth { 800 };
+constexpr int windowHeight { 600 };
 constexpr bool fullscreen { false };
+const std::string windowTitle { "Open Mate Karate" };
+const std::string texPathCrate { "textures/crate.jpg" };
+const std::string texPathLeaves { "textures/leaves.jpg" };
 
 GLFWwindow* window { nullptr };
 bool wireframe { false };
@@ -65,8 +67,11 @@ int main()
     ShaderProgram shaderProgram;
     shaderProgram.loadShaders("shaders/basic.vert", "shaders/basic.frag");
 
-    Texture2D texture;
-    texture.loadTexture("textures/texture.jpg", true);
+    Texture2D texCrate;
+    texCrate.loadTexture(texPathCrate, true);
+
+    Texture2D texLeaves;
+    texLeaves.loadTexture(texPathLeaves, true);
 
     // MAIN LOOP
     while (!glfwWindowShouldClose(window))
@@ -77,8 +82,13 @@ int main()
 
         glClear(GL_COLOR_BUFFER_BIT);
 
-        texture.bind();
+        texCrate.bind(0);
+        texLeaves.bind(1);
+
         shaderProgram.use();
+
+        glUniform1i(glGetUniformLocation(shaderProgram.getProgram(), "tex_0"), 0);
+        glUniform1i(glGetUniformLocation(shaderProgram.getProgram(), "tex_1"), 1);
 
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -108,7 +118,7 @@ bool init()
 
     if (!fullscreen)
     {
-        window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HIGHT, TITLE, nullptr, nullptr);
+        window = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), nullptr, nullptr);
     }
     else
     {
@@ -117,7 +127,7 @@ bool init()
 
         if (vidmode != nullptr)
         {
-            window = glfwCreateWindow(vidmode->width, vidmode->height, TITLE, monitor, nullptr);
+            window = glfwCreateWindow(vidmode->width, vidmode->height, windowTitle.c_str(), monitor, nullptr);
         }
     }
 
@@ -182,7 +192,7 @@ void showFPS(GLFWwindow* window)
 
         std::ostringstream outs;
         outs.precision(3);
-        outs << std::fixed << TITLE << " (FPS: " << fps << ", frame time: " << msPerFrame << " ms)";
+        outs << std::fixed << windowTitle << " (FPS: " << fps << ", frame time: " << msPerFrame << " ms)";
         glfwSetWindowTitle(window, outs.str().c_str());
 
         frameCount = 0;

@@ -11,7 +11,7 @@ public:
     virtual ~Texture2D();
 
     bool loadTexture(const std::string& filename, bool generateMipmaps = true);
-    void bind(GLuint textureUnit = 0);
+    void bind(GLuint texUnit = 0);
 
 private:
 

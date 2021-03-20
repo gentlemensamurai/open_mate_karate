@@ -25,6 +25,27 @@ bool Texture2D::loadTexture(const std::string& filename, bool generateMipmaps)
         return false;
     }
 
+    int widthInBytes { width * 4 };
+    unsigned char* top { nullptr };
+    unsigned char* bottom { nullptr };
+    unsigned char temp { 0x00u };
+    int halfHeight { height / 2 };
+
+    for (size_t row { 0 }; row < halfHeight; row++)
+    {
+        top = imageData + row * widthInBytes;
+        bottom = imageData + (height - row - 1) * widthInBytes;
+
+        for (size_t col { 0 }; col < widthInBytes; col++)
+        {
+            temp = *top;
+            *top = *bottom;
+            *bottom = temp;
+            top++;
+            bottom++;
+        }
+    }
+
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -44,7 +65,8 @@ bool Texture2D::loadTexture(const std::string& filename, bool generateMipmaps)
     return true;
 }
 
-void Texture2D::bind(GLuint textureUnit)
+void Texture2D::bind(GLuint texUnit)
 {
+    glActiveTexture(GL_TEXTURE0 + texUnit);
     glBindTexture(GL_TEXTURE_2D, texture);
 }
