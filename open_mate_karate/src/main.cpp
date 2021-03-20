@@ -14,7 +14,7 @@ GLFWwindow* window { nullptr };
 bool wireframe { false };
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
-void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height);
+void glfw_onFramebufferSize(GLFWwindow* window, int width, int height);
 void showFPS(GLFWwindow* window);
 bool init();
 
@@ -205,6 +205,7 @@ bool init()
 
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, glfw_onKey);
+    glfwSetFramebufferSizeCallback(window, glfw_onFramebufferSize);
 
     glewExperimental = GL_TRUE;
 
@@ -243,7 +244,7 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
     }
 }
 
-void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height)
+void glfw_onFramebufferSize(GLFWwindow* window, int width, int height)
 {
     windowWidth = width;
     windowHeight = height;
