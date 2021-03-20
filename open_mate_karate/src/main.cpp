@@ -2,17 +2,19 @@
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 
-constexpr int windowWidth { 800 };
-constexpr int windowHeight { 600 };
 constexpr bool fullscreen { false };
 const std::string windowTitle { "Open Mate Karate" };
 const std::string texPathCrate { "textures/crate.jpg" };
 const std::string texPathLeaves { "textures/leaves.jpg" };
+const std::string texPathWoodeCrate { "textures/wooden_crate.jpg" };
 
+int windowWidth { 1920 };
+int windowHeight { 1080 };
 GLFWwindow* window { nullptr };
 bool wireframe { false };
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
+void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height);
 void showFPS(GLFWwindow* window);
 bool init();
 
@@ -26,21 +28,60 @@ int main()
 
     GLfloat vertices[]
     {
-         // POSITION        // TEXTURE COORDINATES
-        -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, // TOP LEFT
-         0.5f,  0.5f, 0.0f, 1.0f, 1.0f, // TOP RIGHT
-         0.5f, -0.5f, 0.0f, 1.0f, 0.0f, // BOTTOM RIGHT
-        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f  // BOTTOM LEFT
+         // POSITION         // TEXTURE COORDINATES
+
+         // FRONT FACE
+        -1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f, 0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
+
+         // BACK FACE
+        -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+         1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+         1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+
+         // LEFT FACE
+        -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
+        -1.0f,  1.0f,  1.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+        -1.0f, -1.0f,  1.0f, 1.0f, 0.0f,
+
+         // RIGHT FACE
+         1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
+         1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
+         1.0f,  1.0f,  1.0f, 0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 0.0f, 0.0f,
+         1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+
+         // TOP FACE
+        -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+         1.0f,  1.0f,  1.0f, 1.0f, 0.0f,
+         1.0f,  1.0f, -1.0f, 1.0f, 1.0f,
+        -1.0f,  1.0f, -1.0f, 0.0f, 1.0f,
+        -1.0f,  1.0f,  1.0f, 0.0f, 0.0f,
+         1.0f,  1.0f,  1.0f, 1.0f, 0.0f,
+
+         // BOTTOM FACE
+        -1.0f, -1.0f,  1.0f, 0.0f, 1.0f,
+         1.0f, -1.0f, -1.0f, 1.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f,  1.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f, 0.0f, 0.0f,
+         1.0f, -1.0f, -1.0f, 1.0f, 0.0f
     };
 
-    GLuint indices[]
-    {
-        0, 1, 2,
-        0, 2, 3
-    };
+    glm::vec3 cubePos { glm::vec3(0.0f, 0.0f, -5.0f) };
 
     GLuint vbo;
-    GLuint ibo;
 
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -59,10 +100,6 @@ int main()
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (const void*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
-    glGenBuffers(1, &ibo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
     // SHADER PROGRAM
     ShaderProgram shaderProgram;
     shaderProgram.loadShaders("shaders/basic.vert", "shaders/basic.frag");
@@ -70,31 +107,59 @@ int main()
     Texture2D texCrate;
     texCrate.loadTexture(texPathCrate, true);
 
-    Texture2D texLeaves;
-    texLeaves.loadTexture(texPathLeaves, true);
+    //Texture2D texLeaves;
+    //texLeaves.loadTexture(texPathLeaves, true);
+
+    float cubeAngle { 0.0f };
+    double lastTime { glfwGetTime() };
 
     // MAIN LOOP
     while (!glfwWindowShouldClose(window))
     {
         showFPS(window);
 
-        glfwPollEvents();
+        double currentTime { glfwGetTime() };
+        double deltaTime { currentTime - lastTime };
 
-        glClear(GL_COLOR_BUFFER_BIT);
+        glfwPollEvents();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         texCrate.bind(0);
-        texLeaves.bind(1);
+        //texLeaves.bind(1);
+
+        cubeAngle += static_cast<float>(deltaTime) * 50.0f;
+
+        if (cubeAngle >= 360.f)
+        {
+            cubeAngle = 0.0f;
+        }
+
+        glm::mat4 model(1.0f);
+        glm::mat4 view(1.0f);
+        glm::mat4 projection(1.0f);
+
+        model = glm::translate(model, cubePos) * glm::rotate(model, glm::radians(cubeAngle), glm::vec3(0.0f, 1.0f, 0.0f));
+        
+        glm::vec3 camPos(0.0f, 0.0f, 0.0f);
+        glm::vec3 targetPos(0.0f, 0.0f, -1.0f);
+        glm::vec3 up(0.0f, 1.0f, 0.0f);
+        
+        view = glm::lookAt(camPos, targetPos, up);
+        projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth / windowHeight), 0.1f, 100.f);
 
         shaderProgram.use();
 
-        glUniform1i(glGetUniformLocation(shaderProgram.getProgram(), "tex_0"), 0);
-        glUniform1i(glGetUniformLocation(shaderProgram.getProgram(), "tex_1"), 1);
+        shaderProgram.setUniform("model", model);
+        shaderProgram.setUniform("view", view);
+        shaderProgram.setUniform("projection", projection);
 
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
         glBindVertexArray(0);
 
         glfwSwapBuffers(window);
+
+        lastTime = currentTime;
     }
 
     glDeleteVertexArrays(1, &vao);
@@ -114,7 +179,7 @@ bool init()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
 
     if (!fullscreen)
     {
@@ -150,6 +215,8 @@ bool init()
     }
 
     glClearColor(0.23f, 0.38f, 0.47f, 1.0f);
+    glViewport(0, 0, windowWidth, windowHeight);
+    glEnable(GL_DEPTH_TEST);
 
     return true;
 }
@@ -174,6 +241,14 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
+}
+
+void glfw_OnFrameBufferSize(GLFWwindow* window, int width, int height)
+{
+    windowWidth = width;
+    windowHeight = height;
+
+    glViewport(0, 0, windowWidth, windowHeight);
 }
 
 void showFPS(GLFWwindow* window)
