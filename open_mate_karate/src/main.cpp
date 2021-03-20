@@ -1,19 +1,26 @@
 #include "libs.h"
 #include "ShaderProgram.h"
 #include "Texture2D.h"
+#include "OrbitCamera.h"
 
 constexpr bool fullscreen { false };
+constexpr float mouseSensitivity { 0.25f };
 const std::string windowTitle { "Open Mate Karate" };
 const std::string texPathCrate { "textures/crate.jpg" };
-const std::string texPathLeaves { "textures/leaves.jpg" };
-const std::string texPathWoodeCrate { "textures/wooden_crate.jpg" };
+const std::string texPathGrid { "textures/grid.jpg" };
 
 int windowWidth { 1920 };
 int windowHeight { 1080 };
 GLFWwindow* window { nullptr };
 bool wireframe { false };
 
+OrbitCamera orbitCamera;
+float yaw { 0.0f };
+float pitch { 0.0f };
+float radius { 10.0f };
+
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
+void glfw_onMouseMove(GLFWwindow* window, double posX, double posY);
 void glfw_onFramebufferSize(GLFWwindow* window, int width, int height);
 void showFPS(GLFWwindow* window);
 bool init();
@@ -107,8 +114,8 @@ int main()
     Texture2D texCrate;
     texCrate.loadTexture(texPathCrate, true);
 
-    //Texture2D texLeaves;
-    //texLeaves.loadTexture(texPathLeaves, true);
+    //Texture2D texGrid;
+    //texGrid.loadTexture(texPathGrid, true);
 
     float cubeAngle { 0.0f };
     double lastTime { glfwGetTime() };
@@ -127,24 +134,16 @@ int main()
         texCrate.bind(0);
         //texLeaves.bind(1);
 
-        cubeAngle += static_cast<float>(deltaTime) * 50.0f;
-
-        if (cubeAngle >= 360.f)
-        {
-            cubeAngle = 0.0f;
-        }
-
         glm::mat4 model(1.0f);
         glm::mat4 view(1.0f);
         glm::mat4 projection(1.0f);
 
-        model = glm::translate(model, cubePos) * glm::rotate(model, glm::radians(cubeAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-        
-        glm::vec3 camPos(0.0f, 0.0f, 0.0f);
-        glm::vec3 targetPos(0.0f, 0.0f, -1.0f);
-        glm::vec3 up(0.0f, 1.0f, 0.0f);
-        
-        view = glm::lookAt(camPos, targetPos, up);
+        orbitCamera.setLookAt(cubePos);
+        orbitCamera.rotate(yaw, pitch);
+        orbitCamera.setRadius(radius);
+
+        model = glm::translate(model, cubePos);
+        view = orbitCamera.getViewMatrix();
         projection = glm::perspective(glm::radians(45.0f), static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.f);
 
         shaderProgram.use();
@@ -205,6 +204,7 @@ bool init()
 
     glfwMakeContextCurrent(window);
     glfwSetKeyCallback(window, glfw_onKey);
+    glfwSetCursorPosCallback(window, glfw_onMouseMove);
     glfwSetFramebufferSizeCallback(window, glfw_onFramebufferSize);
 
     glewExperimental = GL_TRUE;
@@ -242,6 +242,27 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
     }
+}
+
+void glfw_onMouseMove(GLFWwindow* window, double posX, double posY)
+{
+    static glm::vec2 lastMousePos { glm::vec2(0.0f, 0.0f) };
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS)
+    {
+        yaw -= (static_cast<float>(posX) - lastMousePos.x) * mouseSensitivity;
+        pitch += (static_cast<float>(posY) - lastMousePos.y) * mouseSensitivity;
+    }
+
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
+    {
+        float dX { 0.01f * (static_cast<float>(posX) - lastMousePos.x) };
+        float dY { 0.01f * (static_cast<float>(posY) - lastMousePos.y) };
+        radius += dX - dY;
+    }
+
+    lastMousePos.x = static_cast<float>(posX);
+    lastMousePos.y = static_cast<float>(posY);
 }
 
 void glfw_onFramebufferSize(GLFWwindow* window, int width, int height)
