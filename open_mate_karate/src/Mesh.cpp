@@ -3,6 +3,27 @@
 #include <sstream>
 #include <fstream>
 
+std::vector<std::string> split(std::string string, std::string character)
+{
+    std::vector<std::string> result;
+
+    while (1)
+    {
+        int pos = string.find(character);
+
+        if (pos == -1)
+        {
+            result.push_back(string);
+            break;
+        }
+
+        result.push_back(string.substr(0, pos));
+        string = string.substr(pos + 1, string.size() - pos - 1);
+    }
+
+    return result;
+}
+
 Mesh::Mesh()
     : loaded(false)
 {
@@ -19,8 +40,10 @@ bool Mesh::loadObj(const std::string& filename)
 {
     std::vector<unsigned int> posIndices;
     std::vector<unsigned int> texCoordIndices;
+    std::vector<unsigned int> normalIndices;
     std::vector<glm::vec3> tempPos;
     std::vector<glm::vec2> tempTexCoord;
+    std::vector<glm::vec3> tempNormals;
 
     if (filename.find(".obj") != std::string::npos)
     {
@@ -38,49 +61,81 @@ bool Mesh::loadObj(const std::string& filename)
 
         while (std::getline(file, lineBuffer))
         {
-            if (lineBuffer.substr(0, 2) == "v ")
-            {
-                std::istringstream posString(lineBuffer.substr(2));
-                glm::vec3 pos;
-                posString >> pos.x;
-                posString >> pos.y;
-                posString >> pos.z;
-                tempPos.push_back(pos);
-            }
-            else if (lineBuffer.substr(0, 2) == "vt")
-            {
-                std::istringstream texCoordString(lineBuffer.substr(3));
-                glm::vec2 texCoord;
-                texCoordString >> texCoord.s;
-                texCoordString >> texCoord.t;
-                tempTexCoord.push_back(texCoord);
-            }
-            else if (lineBuffer.substr(0, 2) == "f ")
-            {
-                int p1 { 0 };
-                int p2 { 0 };
-                int p3 { 0 };
-                int t1 { 0 };
-                int t2 { 0 };
-                int t3 { 0 };
-                int n1 { 0 };
-                int n2 { 0 };
-                int n3 { 0 };
-                const char* face { lineBuffer.c_str() };
-                int match { sscanf_s(face, "f %i/%i/%i %i/%i/%i %i/%i/%i", &p1, &t1, &n1, &p2, &t2, &n2, &p3, &t3, &n3) };
+            std::stringstream ss(lineBuffer);
+            std::string cmd;
+            ss >> cmd;
 
-                if (match != 9)
+            if (cmd == "v")
+            {
+                glm::vec3 pos;
+                int dim { 0 };
+
+                while (dim < 3 && ss >> pos[dim])
                 {
-                    std::cerr << "Failed to parse .obj file!" << std::endl;
-                    return false;
+                    dim++;
                 }
 
-                posIndices.push_back(p1);
-                posIndices.push_back(p2);
-                posIndices.push_back(p3);
-                texCoordIndices.push_back(t1);
-                texCoordIndices.push_back(t2);
-                texCoordIndices.push_back(t3);
+                tempPos.push_back(pos);
+            }
+            else if (cmd == "vt")
+            {
+                glm::vec2 texCoord;
+                int dim { 0 };
+
+                while (dim < 2 && ss >> texCoord[dim])
+                {
+                    dim++;
+                }
+
+                tempTexCoord.push_back(texCoord);
+            }
+            else if (cmd == "vn")
+            {
+                glm::vec3 normal;
+                int dim { 0 };
+
+                while (dim < 3 && ss >> normal[dim])
+                {
+                    dim++;
+                }
+                normal = glm::normalize(normal);
+                tempNormals.push_back(normal);
+            }
+            else if (cmd == "f")
+            {
+                std::string faceData;
+                int posIndex { 0 };
+                int texCoordIndex { 0 };
+                int normalIndex { 0 };
+
+                while (ss >> faceData)
+                {
+                    std::vector<std::string> data = split(faceData, "/");
+
+                    if (data[0].size() > 0)
+                    {
+                        sscanf_s(data[0].c_str(), "%i", &posIndex);
+                        posIndices.push_back(posIndex);
+                    }
+
+                    if (data.size() >= 1)
+                    {
+                        if (data[1].size() > 0)
+                        {
+                            sscanf_s(data[1].c_str(), "%i", &texCoordIndex);
+                            texCoordIndices.push_back(texCoordIndex);
+                        }
+                    }
+
+                    if (data.size() >= 2)
+                    {
+                        if (data[2].size() > 0)
+                        {
+                            sscanf_s(data[2].c_str(), "%i", &normalIndex);
+                            normalIndices.push_back(normalIndex);
+                        }
+                    }
+                }
             }
         }
 
@@ -89,8 +144,22 @@ bool Mesh::loadObj(const std::string& filename)
         for (size_t i { 0 }; i < posIndices.size(); i++)
         {
             Vertex vertex;
-            vertex.pos = tempPos[posIndices[i] - 1];
-            vertex.texCoord = tempTexCoord[texCoordIndices[i] - 1];
+
+            if (tempPos.size() > 0)
+            {
+                vertex.pos = tempPos[posIndices[i] - 1];
+            }
+
+            if (tempNormals.size() > 0)
+            {
+                vertex.normal = tempNormals[normalIndices[i] - 1];
+            }
+
+            if (tempTexCoord.size() > 0)
+            {
+                vertex.texCoord = tempTexCoord[texCoordIndices[i] - 1];
+            }
+
             vertices.push_back(vertex);
         }
 
@@ -121,12 +190,16 @@ void Mesh::initBuffers()
     glBindVertexArray(vao);
 
     // POSITION
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), nullptr);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), nullptr);
     glEnableVertexAttribArray(0);
 
-    // TEXTURE COORDINATES
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(GLfloat), (const void*)(3 * sizeof(GLfloat)));
+    // NORMALS
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
+
+    // TEXTURE COORDINATES
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (const void*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
 
     glBindVertexArray(0);
 }

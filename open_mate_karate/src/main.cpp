@@ -37,24 +37,31 @@ int main()
 
     // MODEL POSITION
     std::vector<glm::vec3> modelPos;
-    modelPos.push_back(glm::vec3(-2.5f, 1.0f, 0.0f)); // CRATE
-    modelPos.push_back(glm::vec3(2.5f, 1.0f, 0.0f)); // WOODCRATE
+    modelPos.push_back(glm::vec3(-3.5f, 0.0f, 0.0f)); // CRATE 1
+    modelPos.push_back(glm::vec3(3.5f, 0.0f, 0.0f)); // CRATE 2
     modelPos.push_back(glm::vec3(0.0f, 0.0f, -2.0f)); // ROBOT
     modelPos.push_back(glm::vec3(0.0f, 0.0f, 0.0f)); // FLOOR
+    modelPos.push_back(glm::vec3(0.0f, 0.0f, 2.0f)); // PIN
+    modelPos.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // BUNNY
 
     // MODEL SCALE
     std::vector<glm::vec3> modelScale;
-    modelScale.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE
-    modelScale.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // WOODCRATE
+    modelScale.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE 1
+    modelScale.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE 2
     modelScale.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // ROBOT
-    modelScale.push_back(glm::vec3(10.0f, 0.0f, 10.0f)); // FLOOR
+    modelScale.push_back(glm::vec3(10.0f, 1.0f, 10.0f)); // FLOOR
+    modelScale.push_back(glm::vec3(0.1f, 0.1f, 0.1f)); // PIN
+    modelScale.push_back(glm::vec3(0.7f, 0.7f, 0.7f)); // BUNNY
 
     // SHADER PROGRAM
     ShaderProgram shaderProgram;
     shaderProgram.loadShaders("shaders/basic.vert", "shaders/basic.frag");
 
+    ShaderProgram lightingShader;
+    lightingShader.loadShaders("shaders/lighting.vert", "shaders/lighting.frag");
+
     // LOAD MESHES AND TEXTURES
-    const size_t modelsCount { 4 };
+    const size_t modelsCount { 6 };
     std::vector<Mesh> meshes(modelsCount);
     std::vector<Texture2D> textures(modelsCount);
 
@@ -62,13 +69,21 @@ int main()
     meshes[1].loadObj("models/woodcrate.obj");
     meshes[2].loadObj("models/robot.obj");
     meshes[3].loadObj("models/floor.obj");
+    meshes[4].loadObj("models/bowling_pin.obj");
+    meshes[5].loadObj("models/bunny.obj");
 
-    textures[0].loadTexture("textures/crate.jpg", true);
+    textures[0].loadTexture("textures/crate_diffuse.jpg", true);
     textures[1].loadTexture("textures/woodcrate_diffuse.jpg", true);
     textures[2].loadTexture("textures/robot_diffuse.jpg", true);
     textures[3].loadTexture("textures/tile_floor.jpg", true);
+    textures[4].loadTexture("textures/AMF.jpg", true);
+    textures[5].loadTexture("textures/bunny_diffuse.jpg", true);
+
+    Mesh lightMesh;
+    lightMesh.loadObj("models/light.obj");
 
     double lastTime { glfwGetTime() };
+    float lightAngle { 0.0f };
 
     // MAIN LOOP
     while (!glfwWindowShouldClose(window))
@@ -86,23 +101,35 @@ int main()
         glm::mat4 view(1.0f);
         glm::mat4 projection(1.0f);
 
-        //model = glm::translate(model, cubePos);
         view = camera.getViewMatrix();
         projection = glm::perspective(glm::radians(camera.getFieldOfView()), static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.0f);
 
-        shaderProgram.use();
+        glm::vec3 lightPos(0.0f, 1.0f, 10.0f);
+        glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+        lightAngle += (float)deltaTime * 50.0f;
+        lightPos.x = 8.0 * sinf(glm::radians(lightAngle));
 
-        shaderProgram.setUniform("view", view);
-        shaderProgram.setUniform("projection", projection);
+        lightingShader.use();
+
+        lightingShader.setUniform("view", view);
+        lightingShader.setUniform("projection", projection);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {
             model = glm::translate(glm::mat4(1.0f), modelPos[i]) * glm::scale(glm::mat4(1.0f), modelScale[i]);
-            shaderProgram.setUniform("model", model);
+            lightingShader.setUniform("model", model);
             textures[i].bind(0);
             meshes[i].draw();
             textures[i].unbind(0);
         }
+
+        model = glm::translate(glm::mat4(1.0f), lightPos);
+        shaderProgram.use();
+        shaderProgram.setUniform("lightColor", lightColor);
+        shaderProgram.setUniform("model", model);
+        shaderProgram.setUniform("view", view);
+        shaderProgram.setUniform("projection", projection);
+        lightMesh.draw();
 
         glfwSwapBuffers(window);
         lastTime = currentTime;
