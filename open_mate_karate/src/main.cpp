@@ -54,11 +54,11 @@ int main()
     modelScale.push_back(glm::vec3(0.7f, 0.7f, 0.7f)); // BUNNY
 
     // SHADER PROGRAM
-    ShaderProgram shaderProgram;
-    shaderProgram.loadShaders("shaders/basic.vert", "shaders/basic.frag");
+    ShaderProgram basicShader;
+    basicShader.loadShaders("shaders/basic.vert", "shaders/basic.frag");
 
-    ShaderProgram lightingShader;
-    lightingShader.loadShaders("shaders/lighting.vert", "shaders/lighting.frag");
+    ShaderProgram lightShader;
+    lightShader.loadShaders("shaders/light.vert", "shaders/light.frag");
 
     // LOAD MESHES AND TEXTURES
     const size_t modelsCount { 6 };
@@ -109,26 +109,28 @@ int main()
         lightAngle += (float)deltaTime * 50.0f;
         lightPos.x = 8.0 * sinf(glm::radians(lightAngle));
 
-        lightingShader.use();
+        basicShader.use();
 
-        lightingShader.setUniform("view", view);
-        lightingShader.setUniform("projection", projection);
+        basicShader.setUniform("view", view);
+        basicShader.setUniform("projection", projection);
+        basicShader.setUniform("lightColor", lightColor);
+        basicShader.setUniform("lightPos", lightPos);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {
             model = glm::translate(glm::mat4(1.0f), modelPos[i]) * glm::scale(glm::mat4(1.0f), modelScale[i]);
-            lightingShader.setUniform("model", model);
+            basicShader.setUniform("model", model);
             textures[i].bind(0);
             meshes[i].draw();
             textures[i].unbind(0);
         }
 
         model = glm::translate(glm::mat4(1.0f), lightPos);
-        shaderProgram.use();
-        shaderProgram.setUniform("lightColor", lightColor);
-        shaderProgram.setUniform("model", model);
-        shaderProgram.setUniform("view", view);
-        shaderProgram.setUniform("projection", projection);
+        lightShader.use();
+        lightShader.setUniform("lightColor", lightColor);
+        lightShader.setUniform("model", model);
+        lightShader.setUniform("view", view);
+        lightShader.setUniform("projection", projection);
         lightMesh.draw();
 
         glfwSwapBuffers(window);
@@ -163,7 +165,9 @@ bool init()
 
         if (vidmode != nullptr)
         {
-            window = glfwCreateWindow(vidmode->width, vidmode->height, windowTitle.c_str(), monitor, nullptr);
+            windowWidth = vidmode->width;
+            windowHeight = vidmode->height;
+            window = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), monitor, nullptr);
         }
     }
 
