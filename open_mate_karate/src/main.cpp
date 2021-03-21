@@ -104,10 +104,15 @@ int main()
         view = camera.getViewMatrix();
         projection = glm::perspective(glm::radians(camera.getFieldOfView()), static_cast<float>(windowWidth) / static_cast<float>(windowHeight), 0.1f, 100.0f);
 
+        glm::vec3 viewPos;
+        viewPos.x = camera.getPos().x;
+        viewPos.y = camera.getPos().y;
+        viewPos.z = camera.getPos().z;
+
         glm::vec3 lightPos(0.0f, 1.0f, 10.0f);
         glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
         lightAngle += (float)deltaTime * 50.0f;
-        lightPos.x = 8.0 * sinf(glm::radians(lightAngle));
+        lightPos.x = 8.0f * sinf(glm::radians(lightAngle));
 
         basicShader.use();
 
@@ -115,6 +120,7 @@ int main()
         basicShader.setUniform("projection", projection);
         basicShader.setUniform("lightColor", lightColor);
         basicShader.setUniform("lightPos", lightPos);
+        basicShader.setUniform("viewPos", viewPos);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {

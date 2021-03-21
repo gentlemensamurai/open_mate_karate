@@ -18,6 +18,7 @@ public:
     const glm::vec3& getLook() const;
     const glm::vec3& getRight() const;
     const glm::vec3& getUp() const;
+    const glm::vec3& getPos() const;
 
     float getFieldOfView() const;
     void setFieldOfView(float fieldOfView);

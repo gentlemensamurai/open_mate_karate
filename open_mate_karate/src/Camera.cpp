@@ -57,6 +57,11 @@ const glm::vec3& Camera::getUp() const
     return this->up;
 }
 
+const glm::vec3& Camera::getPos() const
+{
+    return this->pos;
+}
+
 float Camera::getFieldOfView() const
 {
     return this->fieldOfView;
