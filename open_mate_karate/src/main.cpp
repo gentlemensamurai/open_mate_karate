@@ -4,11 +4,11 @@
 #include "Camera.h"
 #include "Mesh.h"
 
-constexpr bool fullscreen { false };
-constexpr double zoomSensitivity { -3.0 };
-constexpr float moveSpeed { 5.0f };
-constexpr float mouseSensitivity { 0.1f };
-const std::string windowTitle { "Open Mate Karate" };
+constexpr bool FULLSCREEN { false };
+constexpr double ZOOM_SENSITIVITY { -3.0 };
+constexpr float CAMERA_MOVE_SPEED { 5.0f };
+constexpr float MOUSE_SENSITIVITY { 0.1f };
+const std::string WINDOW_TITLE { "Open Mate Karate" };
 
 int windowWidth { 1920 };
 int windowHeight { 1080 };
@@ -118,14 +118,23 @@ int main()
 
         basicShader.setUniform("view", view);
         basicShader.setUniform("projection", projection);
-        basicShader.setUniform("lightColor", lightColor);
-        basicShader.setUniform("lightPos", lightPos);
         basicShader.setUniform("viewPos", viewPos);
+
+
+
+        basicShader.setUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+        basicShader.setUniform("light.diffuse", lightColor);
+        basicShader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+        basicShader.setUniform("light.position", lightPos);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {
             model = glm::translate(glm::mat4(1.0f), modelPos[i]) * glm::scale(glm::mat4(1.0f), modelScale[i]);
             basicShader.setUniform("model", model);
+            basicShader.setUniform("material.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+            basicShader.setUniformSampler("material.diffuseMap", 0);
+            basicShader.setUniform("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
+            basicShader.setUniform("material.shininess", 150.0f);
             textures[i].bind(0);
             meshes[i].draw();
             textures[i].unbind(0);
@@ -160,9 +169,9 @@ bool init()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
 
-    if (!fullscreen)
+    if (!FULLSCREEN)
     {
-        window = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), nullptr, nullptr);
+        window = glfwCreateWindow(windowWidth, windowHeight, WINDOW_TITLE.c_str(), nullptr, nullptr);
     }
     else
     {
@@ -173,7 +182,7 @@ bool init()
         {
             windowWidth = vidmode->width;
             windowHeight = vidmode->height;
-            window = glfwCreateWindow(windowWidth, windowHeight, windowTitle.c_str(), monitor, nullptr);
+            window = glfwCreateWindow(windowWidth, windowHeight, WINDOW_TITLE.c_str(), monitor, nullptr);
         }
     }
 
@@ -231,7 +240,7 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
 
 void glfw_onMouseScroll(GLFWwindow* window, double deltaX, double deltaY)
 {
-    double fieldOfView { camera.getFieldOfView() + deltaY * zoomSensitivity };
+    double fieldOfView { camera.getFieldOfView() + deltaY * ZOOM_SENSITIVITY };
     fieldOfView = glm::clamp(fieldOfView, 1.0, 120.0);
 
     camera.setFieldOfView((float)fieldOfView);
@@ -252,8 +261,8 @@ void update(double deltaTime)
 
     glfwGetCursorPos(window, &mouseX, &mouseY);
 
-    float yaw { static_cast<float>(windowWidth / 2 - mouseX) * mouseSensitivity };
-    float pitch { static_cast<float>(windowHeight / 2 - mouseY) * mouseSensitivity };
+    float yaw { static_cast<float>(windowWidth / 2 - mouseX) * MOUSE_SENSITIVITY };
+    float pitch { static_cast<float>(windowHeight / 2 - mouseY) * MOUSE_SENSITIVITY };
 
     camera.rotate(yaw, pitch);
 
@@ -261,29 +270,29 @@ void update(double deltaTime)
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.move(moveSpeed * (float)deltaTime * camera.getLook());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getLook());
     }
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.move(moveSpeed * (float)deltaTime * -camera.getLook());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * -camera.getLook());
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
-        camera.move(moveSpeed * (float)deltaTime * -camera.getRight());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * -camera.getRight());
     }
     else if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
-        camera.move(moveSpeed * (float)deltaTime * camera.getRight());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getRight());
     }
 
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-        camera.move(moveSpeed * (float)deltaTime * -camera.getUp());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * -camera.getUp());
     }
     else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
-        camera.move(moveSpeed * (float)deltaTime * camera.getUp());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getUp());
     }
 }
 
@@ -303,7 +312,7 @@ void showFPS(GLFWwindow* window)
 
         std::ostringstream outs;
         outs.precision(3);
-        outs << std::fixed << windowTitle << " (FPS: " << fps << ", frame time: " << msPerFrame << " ms)";
+        outs << std::fixed << WINDOW_TITLE << " (FPS: " << fps << ", frame time: " << msPerFrame << " ms)";
         glfwSetWindowTitle(window, outs.str().c_str());
 
         frameCount = 0;
