@@ -165,6 +165,8 @@
     <None Include="shaders\basic_dir.vert" />
     <None Include="shaders\basic_point.frag" />
     <None Include="shaders\basic_point.vert" />
+    <None Include="shaders\basic_spot.frag" />
+    <None Include="shaders\basic_spot.vert" />
     <None Include="shaders\light.frag" />
     <None Include="shaders\light.vert" />
   </ItemGroup>

@@ -76,5 +76,11 @@
     <None Include="shaders\light.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="shaders\basic_spot.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\basic_spot.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

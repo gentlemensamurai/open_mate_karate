@@ -19,6 +19,7 @@ Camera camera(glm::vec3(0.0f, 3.0f, 10.0f));
 float yaw { 0.0f };
 float pitch { 0.0f };
 float radius { 10.0f };
+bool flashlightOn { true };
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode);
 void glfw_onMouseScroll(GLFWwindow* window, double deltaX, double deltaY);
@@ -43,7 +44,7 @@ int main()
     modelPos.push_back(glm::vec3(0.0f, 0.0f, 0.0f)); // FLOOR
     modelPos.push_back(glm::vec3(0.0f, 0.0f, 2.0f)); // PIN
     modelPos.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // BUNNY
-    modelPos.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // LAMP POST
+    modelPos.push_back(glm::vec3(-5.0f, 0.0f, 0.0f)); // LAMP POST
 
     // MODEL SCALE
     std::vector<glm::vec3> modelScale;
@@ -57,7 +58,7 @@ int main()
 
     // SHADER PROGRAM
     ShaderProgram basicShader;
-    basicShader.loadShaders("shaders/basic_point.vert", "shaders/basic_point.frag");
+    basicShader.loadShaders("shaders/basic_spot.vert", "shaders/basic_spot.frag");
 
     ShaderProgram lightShader;
     lightShader.loadShaders("shaders/light.vert", "shaders/light.frag");
@@ -110,15 +111,9 @@ int main()
         viewPos.y = camera.getPos().y;
         viewPos.z = camera.getPos().z;
 
-        glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+        glm::vec3 lightPos = camera.getPos();
         glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightDir(0.0f, -0.9f, -0.17f);
-
-        lightAngle += (float)deltaTime * 50.0f;
-        modelPos[6].x = 3.0f * sinf(glm::radians(lightAngle));
-        modelPos[6].z = 14.0f + 10.0f * cosf(glm::radians(lightAngle));
-        lightPos = modelPos[6];
-        lightPos.y += 3.8f;
+        lightPos.y -= 0.5f;
 
         basicShader.use();
 
@@ -130,9 +125,13 @@ int main()
         basicShader.setUniform("light.diffuse", lightColor);
         basicShader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
         basicShader.setUniform("light.position", lightPos);
+        basicShader.setUniform("light.direction", camera.getLook());
         basicShader.setUniform("light.constant", 1.0f);
         basicShader.setUniform("light.linear", 0.07f);
         basicShader.setUniform("light.exponent", 0.017f);
+        basicShader.setUniform("light.cosInnerCone", glm::cos(glm::radians(15.0f)));
+        basicShader.setUniform("light.cosOuterCone", glm::cos(glm::radians(20.0f)));
+        basicShader.setUniform("light.on", flashlightOn);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {
@@ -234,6 +233,11 @@ void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
+    }
+
+    if (key == GLFW_KEY_F && action == GLFW_PRESS)
+    {
+        flashlightOn = !flashlightOn;
     }
 }
 
