@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{db7fe86d-19ee-4a38-a245-1ae77cda6f10}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\ShaderProgram.cpp">
@@ -49,11 +52,29 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="shaders\basic.vert" />
-    <None Include="shaders\basic.frag" />
-    <None Include="shaders\light.frag" />
-    <None Include="shaders\light.vert" />
-    <None Include="shaders\basic_dir.frag" />
-    <None Include="shaders\basic_dir.vert" />
+    <None Include="shaders\basic.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\basic.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\basic_dir.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\basic_dir.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\basic_point.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\basic_point.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\light.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\light.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

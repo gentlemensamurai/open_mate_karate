@@ -43,6 +43,7 @@ int main()
     modelPos.push_back(glm::vec3(0.0f, 0.0f, 0.0f)); // FLOOR
     modelPos.push_back(glm::vec3(0.0f, 0.0f, 2.0f)); // PIN
     modelPos.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // BUNNY
+    modelPos.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // LAMP POST
 
     // MODEL SCALE
     std::vector<glm::vec3> modelScale;
@@ -52,16 +53,17 @@ int main()
     modelScale.push_back(glm::vec3(10.0f, 1.0f, 10.0f)); // FLOOR
     modelScale.push_back(glm::vec3(0.1f, 0.1f, 0.1f)); // PIN
     modelScale.push_back(glm::vec3(0.7f, 0.7f, 0.7f)); // BUNNY
+    modelScale.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // LAMP POST
 
     // SHADER PROGRAM
     ShaderProgram basicShader;
-    basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
+    basicShader.loadShaders("shaders/basic_point.vert", "shaders/basic_point.frag");
 
     ShaderProgram lightShader;
     lightShader.loadShaders("shaders/light.vert", "shaders/light.frag");
 
     // LOAD MESHES AND TEXTURES
-    const size_t modelsCount { 6 };
+    const size_t modelsCount { 7 };
     std::vector<Mesh> meshes(modelsCount);
     std::vector<Texture2D> textures(modelsCount);
 
@@ -71,6 +73,7 @@ int main()
     meshes[3].loadObj("models/floor.obj");
     meshes[4].loadObj("models/bowling_pin.obj");
     meshes[5].loadObj("models/bunny.obj");
+    meshes[6].loadObj("models/lampPost.obj");
 
     textures[0].loadTexture("textures/crate_diffuse.jpg", true);
     textures[1].loadTexture("textures/woodcrate_diffuse.jpg", true);
@@ -78,9 +81,7 @@ int main()
     textures[3].loadTexture("textures/tile_floor.jpg", true);
     textures[4].loadTexture("textures/AMF.jpg", true);
     textures[5].loadTexture("textures/bunny_diffuse.jpg", true);
-
-    Mesh lightMesh;
-    lightMesh.loadObj("models/light.obj");
+    textures[6].loadTexture("textures/lamp_post_diffuse.png", true);
 
     double lastTime { glfwGetTime() };
     float lightAngle { 0.0f };
@@ -109,11 +110,15 @@ int main()
         viewPos.y = camera.getPos().y;
         viewPos.z = camera.getPos().z;
 
-        glm::vec3 lightPos(0.0f, 1.0f, 10.0f);
+        glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
         glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
         glm::vec3 lightDir(0.0f, -0.9f, -0.17f);
+
         lightAngle += (float)deltaTime * 50.0f;
-        lightPos.x = 8.0f * sinf(glm::radians(lightAngle));
+        modelPos[6].x = 3.0f * sinf(glm::radians(lightAngle));
+        modelPos[6].z = 14.0f + 10.0f * cosf(glm::radians(lightAngle));
+        lightPos = modelPos[6];
+        lightPos.y += 3.8f;
 
         basicShader.use();
 
@@ -124,7 +129,10 @@ int main()
         basicShader.setUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
         basicShader.setUniform("light.diffuse", lightColor);
         basicShader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        basicShader.setUniform("light.dir", lightDir);
+        basicShader.setUniform("light.position", lightPos);
+        basicShader.setUniform("light.constant", 1.0f);
+        basicShader.setUniform("light.linear", 0.07f);
+        basicShader.setUniform("light.exponent", 0.017f);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {
