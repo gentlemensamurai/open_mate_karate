@@ -55,7 +55,7 @@ int main()
 
     // SHADER PROGRAM
     ShaderProgram basicShader;
-    basicShader.loadShaders("shaders/basic.vert", "shaders/basic.frag");
+    basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
 
     ShaderProgram lightShader;
     lightShader.loadShaders("shaders/light.vert", "shaders/light.frag");
@@ -111,6 +111,7 @@ int main()
 
         glm::vec3 lightPos(0.0f, 1.0f, 10.0f);
         glm::vec3 lightColor(1.0f, 1.0f, 1.0f);
+        glm::vec3 lightDir(0.0f, -0.9f, -0.17f);
         lightAngle += (float)deltaTime * 50.0f;
         lightPos.x = 8.0f * sinf(glm::radians(lightAngle));
 
@@ -120,12 +121,10 @@ int main()
         basicShader.setUniform("projection", projection);
         basicShader.setUniform("viewPos", viewPos);
 
-
-
         basicShader.setUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
         basicShader.setUniform("light.diffuse", lightColor);
         basicShader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-        basicShader.setUniform("light.position", lightPos);
+        basicShader.setUniform("light.dir", lightDir);
 
         for (size_t i { 0 }; i < modelsCount; i++)
         {
@@ -139,14 +138,6 @@ int main()
             meshes[i].draw();
             textures[i].unbind(0);
         }
-
-        model = glm::translate(glm::mat4(1.0f), lightPos);
-        lightShader.use();
-        lightShader.setUniform("lightColor", lightColor);
-        lightShader.setUniform("model", model);
-        lightShader.setUniform("view", view);
-        lightShader.setUniform("projection", projection);
-        lightMesh.draw();
 
         glfwSwapBuffers(window);
         lastTime = currentTime;
