@@ -84,7 +84,7 @@ void Game::run()
     modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // LAMP POST
 
     // SHADER PROGRAM
-    basicShader.loadShaders("shaders/basic_spot.vert", "shaders/basic_spot.frag");
+    basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
 
     // LOAD MESHES AND TEXTURES
     meshes.resize(modelsPositions.size());
@@ -315,17 +315,10 @@ void Game::render()
     basicShader.setUniform("projection", projection);
     basicShader.setUniform("viewPos", viewPos);
 
+    basicShader.setUniform("light.dir", glm::vec3(-0.5f, -1.0f, -0.5f));
     basicShader.setUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
     basicShader.setUniform("light.diffuse", lightColor);
     basicShader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-    basicShader.setUniform("light.position", lightPos);
-    basicShader.setUniform("light.direction", camera.getLook());
-    basicShader.setUniform("light.constant", 1.0f);
-    basicShader.setUniform("light.linear", 0.07f);
-    basicShader.setUniform("light.exponent", 0.017f);
-    basicShader.setUniform("light.cosInnerCone", glm::cos(glm::radians(15.0f)));
-    basicShader.setUniform("light.cosOuterCone", glm::cos(glm::radians(20.0f)));
-    basicShader.setUniform("light.on", flashlightOn);
 
     for (size_t i { 0 }; i < modelsPositions.size(); i++)
     {

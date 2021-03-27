@@ -29,7 +29,7 @@ out vec4 fragColor;
 void main()
 {
     // AMBIENT
-    vec3 ambient = light.ambient * material.ambient;
+    vec3 ambient = light.ambient * material.ambient * vec3(texture(material.diffuseMap, TexCoord));
 
     // DIFFUSE
     vec3 normal = normalize(Normal);
