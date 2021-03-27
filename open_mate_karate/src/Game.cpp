@@ -51,6 +51,16 @@ void Game::render()
 
 }
 
+int Game::getWindowShouldClose()
+{
+    return glfwWindowShouldClose(window);
+}
+
+void Game::setWindowShouldClose()
+{
+    glfwSetWindowShouldClose(window, GLFW_TRUE);
+}
+
 void Game::initGlfw()
 {
     if (!glfwInit())

@@ -22,6 +22,8 @@ public:
 
     void update();
     void render();
+    int getWindowShouldClose();
+    void setWindowShouldClose();
 
 private:
     const std::string WINDOW_TITLE;
