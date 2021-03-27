@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <vector>
+#include <string>
 
 #include <glew.h>
 #include <glfw3.h>

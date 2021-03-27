@@ -1,4 +1,4 @@
-#include "libs.h"
+#include "Game.h"
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 #include "Camera.h"
@@ -156,6 +156,7 @@ int main()
 
 bool init()
 {
+    // \/ \/ \/ IMPLEMENTED IN GAME CLASS \/ \/ \/ //
     if (!glfwInit())
     {
         std::cerr << "GLFW initialization failed!" << std::endl;
@@ -192,13 +193,19 @@ bool init()
     }
 
     glfwMakeContextCurrent(window);
+    // /\ /\ /\ IMPLEMENTED IN GAME CLASS /\ /\ /\ //
+
     glfwSetKeyCallback(window, glfw_onKey);
     glfwSetScrollCallback(window, glfw_onMouseScroll);
+
+    // \/ \/ \/ IMPLEMENTED IN GAME CLASS \/ \/ \/ //
     glfwSetFramebufferSizeCallback(window, glfw_onFramebufferSize);
+    // /\ /\ /\ IMPLEMENTED IN GAME CLASS /\ /\ /\ //
 
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPos(window, windowWidth / 2.0f, windowHeight / 2.0);
 
+    // \/ \/ \/ IMPLEMENTED IN GAME CLASS \/ \/ \/ //
     glewExperimental = GL_TRUE;
 
     if (glewInit() != GLEW_OK)
@@ -206,12 +213,16 @@ bool init()
         std::cerr << "GLEW initialization failed!" << std::endl;
         return false;
     }
+    // /\ /\ /\ IMPLEMENTED IN GAME CLASS /\ /\ /\ //
 
     glClearColor(0.23f, 0.38f, 0.47f, 1.0f);
     glViewport(0, 0, windowWidth, windowHeight);
+
+    // \/ \/ \/ IMPLEMENTED IN GAME CLASS \/ \/ \/ //
     glEnable(GL_DEPTH_TEST);
 
     return true;
+    // /\ /\ /\ IMPLEMENTED IN GAME CLASS /\ /\ /\ //
 }
 
 void glfw_onKey(GLFWwindow* window, int key, int scancode, int action, int mode)
