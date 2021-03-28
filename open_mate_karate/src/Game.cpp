@@ -45,10 +45,11 @@ Game::Game
       view(1.0f),
       projection(1.0f),
       camera(glm::vec3(0.0f, 3.0f, 10.0f)),
-      modelsPositions(0),
-      modelsScales(0),
-      meshes(0),
-      textures(0),
+      modelsPositions(),
+      modelsScales(),
+      meshes(),
+      textures(),
+      materials(),
       basicShader()
 {
     initGlfw();
@@ -73,7 +74,7 @@ void Game::run()
     modelsPositions.push_back(glm::vec3(0.0f, 0.0f, 2.0f)); // PIN
     modelsPositions.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // BUNNY
     modelsPositions.push_back(glm::vec3(-5.0f, 0.0f, 0.0f)); // LAMP POST
-
+    
     // MODEL SCALE
     modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE 1
     modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE 2
@@ -82,6 +83,16 @@ void Game::run()
     modelsScales.push_back(glm::vec3(0.1f, 0.1f, 0.1f)); // PIN
     modelsScales.push_back(glm::vec3(0.7f, 0.7f, 0.7f)); // BUNNY
     modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // LAMP POST
+
+    // MATERIALS
+    Material material(glm::vec3(0.1f), glm::vec3(1.0f), glm::vec3(0.5f), 0, 0, 150.0f);
+    materials.push_back(material);
+    materials.push_back(material);
+    materials.push_back(material);
+    materials.push_back(material);
+    materials.push_back(material);
+    materials.push_back(material);
+    materials.push_back(material);
 
     // SHADER PROGRAM
     basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
@@ -324,10 +335,7 @@ void Game::render()
     {
         model = glm::translate(glm::mat4(1.0f), modelsPositions[i]) * glm::scale(glm::mat4(1.0f), modelsScales[i]);
         basicShader.setUniform("model", model);
-        basicShader.setUniform("material.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
-        basicShader.setUniformSampler("material.diffuseMap", 0);
-        basicShader.setUniform("material.specular", glm::vec3(0.5f, 0.5f, 0.5f));
-        basicShader.setUniform("material.shininess", 150.0f);
+        materials[i].sentToShader(basicShader);
         textures[i].bind(0);
         meshes[i].draw();
         textures[i].unbind(0);

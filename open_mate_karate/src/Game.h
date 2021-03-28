@@ -6,6 +6,7 @@
 #include "ShaderProgram.h"
 #include "Mesh.h"
 #include "Texture2D.h"
+#include "Material.h"
 
 class Game
 {
@@ -57,6 +58,7 @@ private:
     std::vector<glm::vec3> modelsScales;
     std::vector<Mesh> meshes;
     std::vector<Texture2D> textures;
+    std::vector<Material> materials;
 
     ShaderProgram basicShader;
 
