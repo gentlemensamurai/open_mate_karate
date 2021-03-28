@@ -24,7 +24,7 @@ Material::~Material()
 
 }
 
-void Material::sentToShader(ShaderProgram& shader)
+void Material::sendToShader(ShaderProgram& shader)
 {
     shader.setUniform("material.ambient", ambient);
     shader.setUniform("material.diffuse", diffuse);

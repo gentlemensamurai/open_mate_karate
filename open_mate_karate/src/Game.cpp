@@ -327,15 +327,15 @@ void Game::render()
     basicShader.setUniform("viewPos", viewPos);
 
     basicShader.setUniform("light.dir", glm::vec3(-0.5f, -1.0f, -0.5f));
-    basicShader.setUniform("light.ambient", glm::vec3(0.2f, 0.2f, 0.2f));
+    basicShader.setUniform("light.ambient", glm::vec3(1.0f));
     basicShader.setUniform("light.diffuse", lightColor);
-    basicShader.setUniform("light.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    basicShader.setUniform("light.specular", glm::vec3(1.0f));
 
     for (size_t i { 0 }; i < modelsPositions.size(); i++)
     {
         model = glm::translate(glm::mat4(1.0f), modelsPositions[i]) * glm::scale(glm::mat4(1.0f), modelsScales[i]);
         basicShader.setUniform("model", model);
-        materials[i].sentToShader(basicShader);
+        materials[i].sendToShader(basicShader);
         textures[i].bind(0);
         meshes[i].draw();
         textures[i].unbind(0);

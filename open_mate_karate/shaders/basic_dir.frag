@@ -37,13 +37,13 @@ void main()
     vec3 normal = normalize(Normal);
     vec3 lightDir = normalize(-light.dir);
     float normalDotLight = max(dot(normal, lightDir), 0.0f);
-    vec3 diffuse = light.diffuse * vec3(texture(material.diffuseMap, TexCoord)) * normalDotLight;
+    vec3 diffuse = light.diffuse * material.diffuse * vec3(texture(material.diffuseMap, TexCoord)) * normalDotLight;
 
     // SPECULAR
     vec3 viewDir = normalize(viewPos - FragPos);
     vec3 halfDir = normalize(lightDir + viewDir);
     float normalDotHalf = max(dot(normal, halfDir), 0.0f);
-    vec3 specular = light.specular * material.specular * pow(normalDotHalf, material.shininess);
+    vec3 specular = light.specular * material.specular * vec3(texture(material.specularMap, TexCoord)) * pow(normalDotHalf, material.shininess);
 
     fragColor = vec4(ambient + diffuse + specular, 1.0f);
 }

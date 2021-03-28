@@ -21,7 +21,7 @@ public:
     );
     ~Material();
 
-    void sentToShader(ShaderProgram& shader);
+    void sendToShader(ShaderProgram& shader);
 
 private:
     glm::vec3 ambient;
