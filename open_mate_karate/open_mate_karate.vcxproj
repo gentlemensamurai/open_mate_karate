@@ -145,26 +145,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\Material.cpp" />
-    <ClCompile Include="src\Mesh.cpp" />
-    <ClCompile Include="src\Model.cpp" />
-    <ClCompile Include="src\ShaderProgram.cpp" />
-    <ClCompile Include="src\Texture2D.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\libs.h" />
-    <ClInclude Include="src\Material.h" />
-    <ClInclude Include="src\Mesh.h" />
-    <ClInclude Include="src\Model.h" />
-    <ClInclude Include="src\ShaderProgram.h" />
-    <ClInclude Include="src\Texture2D.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="shaders\basic.frag" />
     <None Include="shaders\basic.vert" />
     <None Include="shaders\basic_dir.frag" />
@@ -175,6 +155,28 @@
     <None Include="shaders\basic_spot.vert" />
     <None Include="shaders\light.frag" />
     <None Include="shaders\light.vert" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\engine\Camera.cpp" />
+    <ClCompile Include="src\engine\Game.cpp" />
+    <ClCompile Include="src\engine\main.cpp" />
+    <ClCompile Include="src\engine\Material.cpp" />
+    <ClCompile Include="src\engine\Mesh.cpp" />
+    <ClCompile Include="src\engine\Model.cpp" />
+    <ClCompile Include="src\engine\ShaderProgram.cpp" />
+    <ClCompile Include="src\engine\Texture2D.cpp" />
+    <ClCompile Include="src\game\Board.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\engine\Camera.h" />
+    <ClInclude Include="src\engine\Game.h" />
+    <ClInclude Include="src\engine\libs.h" />
+    <ClInclude Include="src\engine\Material.h" />
+    <ClInclude Include="src\engine\Mesh.h" />
+    <ClInclude Include="src\engine\Model.h" />
+    <ClInclude Include="src\engine\ShaderProgram.h" />
+    <ClInclude Include="src\engine\Texture2D.h" />
+    <ClInclude Include="src\game\Board.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
