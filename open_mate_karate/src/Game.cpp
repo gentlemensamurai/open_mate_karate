@@ -45,11 +45,10 @@ Game::Game
       view(1.0f),
       projection(1.0f),
       camera(glm::vec3(0.0f, 3.0f, 10.0f)),
-      modelsPositions(),
-      modelsScales(),
       meshes(),
       textures(),
       materials(),
+      models(),
       basicShader()
 {
     initGlfw();
@@ -66,23 +65,8 @@ Game::~Game()
 
 void Game::run()
 {
-    // MODEL POSITION
-    modelsPositions.push_back(glm::vec3(-3.5f, 0.0f, 0.0f)); // CRATE 1
-    modelsPositions.push_back(glm::vec3(3.5f, 0.0f, 0.0f)); // CRATE 2
-    modelsPositions.push_back(glm::vec3(0.0f, 0.0f, -2.0f)); // ROBOT
-    modelsPositions.push_back(glm::vec3(0.0f, 0.0f, 0.0f)); // FLOOR
-    modelsPositions.push_back(glm::vec3(0.0f, 0.0f, 2.0f)); // PIN
-    modelsPositions.push_back(glm::vec3(-2.0f, 0.0f, 2.0f)); // BUNNY
-    modelsPositions.push_back(glm::vec3(-5.0f, 0.0f, 0.0f)); // LAMP POST
-    
-    // MODEL SCALE
-    modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE 1
-    modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // CRATE 2
-    modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // ROBOT
-    modelsScales.push_back(glm::vec3(10.0f, 1.0f, 10.0f)); // FLOOR
-    modelsScales.push_back(glm::vec3(0.1f, 0.1f, 0.1f)); // PIN
-    modelsScales.push_back(glm::vec3(0.7f, 0.7f, 0.7f)); // BUNNY
-    modelsScales.push_back(glm::vec3(1.0f, 1.0f, 1.0f)); // LAMP POST
+    // SHADER PROGRAM
+    basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
 
     // MATERIALS
     Material material(glm::vec3(0.1f), glm::vec3(1.0f), glm::vec3(0.5f), 0, 0, 150.0f);
@@ -94,12 +78,9 @@ void Game::run()
     materials.push_back(material);
     materials.push_back(material);
 
-    // SHADER PROGRAM
-    basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
-
     // LOAD MESHES AND TEXTURES
-    meshes.resize(modelsPositions.size());
-    textures.resize(modelsPositions.size());
+    meshes.resize(7);
+    textures.resize(7);
 
     meshes[0].loadObj("models/crate.obj");
     meshes[1].loadObj("models/woodcrate.obj");
@@ -116,6 +97,14 @@ void Game::run()
     textures[4].loadTexture("textures/AMF.jpg", true);
     textures[5].loadTexture("textures/bunny_diffuse.jpg", true);
     textures[6].loadTexture("textures/lamp_post_diffuse.png", true);
+
+    models.push_back(new Model(&materials[0], &textures[0], &textures[0], &meshes[0], glm::vec3(-3.5f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // CRATE 1
+    models.push_back(new Model(&materials[1], &textures[1], &textures[1], &meshes[1], glm::vec3(3.5f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // CRATE 2
+    models.push_back(new Model(&materials[2], &textures[2], &textures[2], &meshes[2], glm::vec3(0.0f, 0.0f, -2.0f), glm::vec3(1.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // ROBOT
+    models.push_back(new Model(&materials[3], &textures[3], &textures[3], &meshes[3], glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(10.0f, 1.0f, 10.0f))); // FLOOR
+    models.push_back(new Model(&materials[4], &textures[4], &textures[4], &meshes[4], glm::vec3(0.0f, 0.0f, 2.0f), glm::vec3(1.0f), glm::vec3(0.1f, 0.1f, 0.1f))); // PIN
+    models.push_back(new Model(&materials[5], &textures[5], &textures[5], &meshes[5], glm::vec3(-2.0f, 0.0f, 2.0f), glm::vec3(1.0f), glm::vec3(0.7f, 0.7f, 0.7f))); // BUNNY
+    models.push_back(new Model(&materials[6], &textures[6], &textures[6], &meshes[6], glm::vec3(-5.0f, 0.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f, 1.0f, 1.0f))); // LAMP POST
 
     glClearColor(0.23f, 0.38f, 0.47f, 1.0f);
     glViewport(0, 0, framebufferWidth, framebufferHeight);
@@ -331,15 +320,12 @@ void Game::render()
     basicShader.setUniform("light.diffuse", lightColor);
     basicShader.setUniform("light.specular", glm::vec3(1.0f));
 
-    for (size_t i { 0 }; i < modelsPositions.size(); i++)
+    for (size_t i { 0 }; i < models.size(); i++)
     {
-        model = glm::translate(glm::mat4(1.0f), modelsPositions[i]) * glm::scale(glm::mat4(1.0f), modelsScales[i]);
-        basicShader.setUniform("model", model);
-        materials[i].sendToShader(basicShader);
-        textures[i].bind(0);
-        meshes[i].draw();
-        textures[i].unbind(0);
+        models[i]->update();
+        models[i]->render(basicShader);
     }
 
     glfwSwapBuffers(window);
+    glFlush();
 }

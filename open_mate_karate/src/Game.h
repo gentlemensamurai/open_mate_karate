@@ -7,6 +7,7 @@
 #include "Mesh.h"
 #include "Texture2D.h"
 #include "Material.h"
+#include "Model.h"
 
 class Game
 {
@@ -54,11 +55,10 @@ private:
 
     Camera camera;
 
-    std::vector<glm::vec3> modelsPositions;
-    std::vector<glm::vec3> modelsScales;
     std::vector<Mesh> meshes;
     std::vector<Texture2D> textures;
     std::vector<Material> materials;
+    std::vector<Model*> models;
 
     ShaderProgram basicShader;
 

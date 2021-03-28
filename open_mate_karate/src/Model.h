@@ -14,7 +14,7 @@ public:
         Material* material,
         Texture2D* diffuseTexture,
         Texture2D* specularTexture,
-        std::vector<Mesh*> meshes,
+        Mesh* mesh,
         glm::vec3 position,
         glm::vec3 rotation,
         glm::vec3 scale
@@ -29,13 +29,15 @@ private:
     Texture2D* diffuseTexture;
     Texture2D* specularTexture;
 
-    std::vector<Mesh*> meshes;
+    Mesh* mesh;
 
     glm::vec3 position;
     glm::vec3 rotation;
     glm::vec3 scale;
 
-    void updateUniforms();
+    glm::mat4 model;
+
+    void updateUniforms(ShaderProgram& shader);
 };
 
 #endif // MODEL_H
