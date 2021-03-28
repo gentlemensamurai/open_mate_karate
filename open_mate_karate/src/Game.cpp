@@ -59,6 +59,11 @@ Game::Game
 
 Game::~Game()
 {
+    for (size_t i { 0 }; i < models.size(); i++)
+    {
+        delete models[i];
+    }
+
     glfwDestroyWindow(window);
     glfwTerminate();
 }
