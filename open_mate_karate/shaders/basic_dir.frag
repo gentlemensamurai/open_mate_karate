@@ -3,8 +3,10 @@
 struct Material
 {
     vec3 ambient;
-    sampler2D diffuseMap;
+    vec3 diffuse;
     vec3 specular;
+    sampler2D diffuseMap;
+    sampler2D specularMap;
     float shininess;
 };
 
