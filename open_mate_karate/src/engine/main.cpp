@@ -8,25 +8,25 @@
 
 int main()
 {
-    //Board board;
+    Board board;
 
-    //board.addCreature(std::make_shared<Field>(1, 1), std::make_shared<Creature>("Goblin"));
-    //board.addCreature(std::make_shared<Field>(1, 1), std::make_shared<Creature>("Orc"));
-    //board.addCreature(std::make_shared<Field>(3, 3), std::make_shared<Creature>("Minotaur"));
+    board.addCreature(FieldCoord(2, 2), std::make_shared<Creature>("Goblin"));
+    board.addCreature(FieldCoord(2, 2), std::make_shared<Creature>("Orc"));
+    board.addCreature(FieldCoord(1, 1), std::make_shared<Creature>("Minotaur"));
 
-    //std::shared_ptr<Creature> creature { board.getCreature(1, 1) };
+    std::shared_ptr<Creature> creature { board.getCreature(FieldCoord(1, 1)) };
 
-    //if (creature != nullptr)
-    //{
-    //    std::cout << "Creature exists: " << creature->name << std::endl;
-    //}
-    //else
-    //{
-    //    std::cout << "Creature doesn't exist!" << std::endl;
-    //}
+    if (creature != nullptr)
+    {
+        std::cout << "Creature exists: " << creature->name << std::endl;
+    }
+    else
+    {
+        std::cout << "Creature doesn't exist!" << std::endl;
+    }
 
-    Game game("Open Mate Karate", 1920, 1080, 3, 3, false, false);
-    game.run();
+    //Game game("Open Mate Karate", 1920, 1080, 3, 3, false, false);
+    //game.run();
 
     return 0;
 }

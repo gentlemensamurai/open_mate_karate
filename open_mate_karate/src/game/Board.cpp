@@ -1,7 +1,7 @@
 #include "Board.h"
 
 Board::Board()
-    : map()
+    : creatures()
 {
 
 }
@@ -11,28 +11,22 @@ Board::~Board()
 
 }
 
-void Board::addCreature(std::shared_ptr<Field> field, std::shared_ptr<Creature> creature)
+bool Board::addCreature(FieldCoord fieldCoord, std::shared_ptr<Creature> creature)
 {
-    for (auto& i : map)
-    {
-        if ((i.first->getX() == field->getX()) && (i.first->getY() == field->getY()))
-        {
-            return;
-        }
-    }
-
-    map.insert(std::pair<std::shared_ptr<Field>, std::shared_ptr<Creature>>(field, creature));
+    auto result = creatures.insert(std::pair<FieldCoord, std::shared_ptr<Creature>>(fieldCoord, creature));
+    return result.second;
 }
 
-std::shared_ptr<Creature> Board::getCreature(unsigned int x, unsigned int y)
+std::shared_ptr<Creature> Board::getCreature(FieldCoord fieldCoord)
 {
-    for (auto& i : map)
-    {
-        if ((i.first->getX() == x) && (i.first->getY() == y) && (i.second != nullptr))
-        {
-            return i.second;
-        }
-    }
+    auto it = creatures.find(fieldCoord);
 
-    return nullptr;
+    if ((it != creatures.end()) && (it->second != nullptr))
+    {
+        return it->second;
+    }
+    else
+    {
+        return nullptr;
+    }
 }

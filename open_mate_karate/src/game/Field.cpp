@@ -1,8 +1,36 @@
 #include "Field.h"
 
-Field::Field(unsigned int x, unsigned int y)
+FieldCoord::FieldCoord(unsigned short x, unsigned short y)
     : x(x),
       y(y)
+{
+
+}
+
+bool FieldCoord::operator<(const FieldCoord& fieldCoord) const
+{
+    if (x < fieldCoord.x)
+    {
+        return true;
+    }
+    else if (x == fieldCoord.x)
+    {
+        if (y < fieldCoord.y)
+        {
+            return true;
+        }
+        else if (y == fieldCoord.y)
+        {
+            return false;
+        }
+    }
+    else
+    {
+        return false;
+    }
+}
+
+Field::Field()
 {
 
 }
@@ -10,9 +38,4 @@ Field::Field(unsigned int x, unsigned int y)
 Field::~Field()
 {
 
-}
-
-bool Field::operator<(const Field& field) const
-{
-    return (x < field.x) && (y < field.y);
 }

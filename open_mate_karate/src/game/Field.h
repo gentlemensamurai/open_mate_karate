@@ -1,20 +1,23 @@
 #ifndef FIELD_H
 #define FIELD_H
 
+struct FieldCoord
+{
+    unsigned short x;
+    unsigned short y;
+
+    FieldCoord(unsigned short x, unsigned short y);
+    bool operator<(const FieldCoord& fieldCoord) const;
+};
+
 class Field
 {
 public:
-    Field(unsigned int x, unsigned int y);
+    Field();
     ~Field();
 
-    inline unsigned int getX() { return x; }
-    inline unsigned int getY() { return y; }
-
-    bool operator<(const Field& field) const;
-
 private:
-    unsigned int x;
-    unsigned int y;
+
 };
 
 #endif // FIELD_H

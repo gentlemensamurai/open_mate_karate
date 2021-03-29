@@ -14,11 +14,11 @@ public:
     Board();
     ~Board();
 
-    void addCreature(std::shared_ptr<Field> field, std::shared_ptr<Creature> creature);
-    std::shared_ptr<Creature> getCreature(unsigned int x, unsigned int y);
+    bool addCreature(FieldCoord fieldCoord, std::shared_ptr<Creature> creature);
+    std::shared_ptr<Creature> getCreature(FieldCoord fieldCoord);
 
 private:
-    std::map<std::shared_ptr<Field>, std::shared_ptr<Creature>> map;
+    std::map<FieldCoord, std::shared_ptr<Creature>> creatures;
 };
 
 #endif // BOARD_H
