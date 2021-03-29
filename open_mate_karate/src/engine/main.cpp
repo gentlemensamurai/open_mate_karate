@@ -8,22 +8,12 @@
 
 int main()
 {
-    Board board;
+    Board board(20, 15);
 
-    board.addCreature(FieldCoord(2, 2), std::make_shared<Creature>("Goblin"));
+    board.addCreature(FieldCoord(19, 5), std::make_shared<Creature>("Goblin"));
     board.addCreature(FieldCoord(2, 2), std::make_shared<Creature>("Orc"));
-    board.addCreature(FieldCoord(1, 1), std::make_shared<Creature>("Minotaur"));
 
-    std::shared_ptr<Creature> creature { board.getCreature(FieldCoord(1, 1)) };
-
-    if (creature != nullptr)
-    {
-        std::cout << "Creature exists: " << creature->name << std::endl;
-    }
-    else
-    {
-        std::cout << "Creature doesn't exist!" << std::endl;
-    }
+    board.moveCreature(FieldCoord(1, 1), FieldCoord(3, 3));
 
     //Game game("Open Mate Karate", 1920, 1080, 3, 3, false, false);
     //game.run();
