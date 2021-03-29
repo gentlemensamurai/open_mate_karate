@@ -4,7 +4,7 @@ CreatureTurnQueue::CreatureTurnQueue(const std::vector<std::shared_ptr<Creature>
     : creatureTurnQueue { },
       activeCreature { nullptr }
 {
-    for (auto& i : creatures)
+    for (auto i : creatures)
     {
         creatureTurnQueue.push(i);
     }

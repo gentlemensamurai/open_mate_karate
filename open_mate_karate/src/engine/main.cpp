@@ -10,9 +10,9 @@
 int main()
 {
     std::vector<std::shared_ptr<Creature>> creatures;
-    creatures.push_back(std::make_shared<Creature>("Goblin"));
-    creatures.push_back(std::make_shared<Creature>("Orc"));
-    creatures.push_back(std::make_shared<Creature>("Minotaur"));
+    creatures.push_back(std::make_shared<Creature>("Goblin", 5, 5, 5, 5));
+    creatures.push_back(std::make_shared<Creature>("Orc", 10, 10, 10, 10));
+    creatures.push_back(std::make_shared<Creature>("Minotaur", 20, 20, 20, 20));
 
     CreatureTurnQueue creatureTurnQueue(creatures);
 
