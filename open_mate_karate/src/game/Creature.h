@@ -2,22 +2,23 @@
 #define CREATURE_H
 
 #include <string>
+#include <memory>
 
 struct CreatureStats
 {
     const std::string NAME;
-    const unsigned short ATTACK;
-    const unsigned short ARMOR;
-    const unsigned short MAX_HP;
-    const unsigned short MOVE_RANGE;
+    const short ATTACK;
+    const short ARMOR;
+    const short MAX_HP;
+    const short MOVE_RANGE;
 
     CreatureStats
     (
         const std::string name,
-        const unsigned short attack,
-        const unsigned short armor,
-        const unsigned short maxHp,
-        const unsigned short moveRange
+        const short attack,
+        const short armor,
+        const short maxHp,
+        const short moveRange
     );
 };
 
@@ -27,15 +28,19 @@ public:
     Creature
     (
         const std::string name,
-        const unsigned short attack,
-        const unsigned short armor,
-        const unsigned short maxHp,
-        const unsigned short moveRange
+        const short attack,
+        const short armor,
+        const short maxHp,
+        const short moveRange
     );
     ~Creature();
 
+    void attack(const std::shared_ptr<Creature> defender);
+    const short getCurrentHp() const;
+
 private:
-    CreatureStats creatureStats;
+    const CreatureStats CREATURE_STATS;
+    short currentHp;
 };
 
 #endif // CREATURE_H

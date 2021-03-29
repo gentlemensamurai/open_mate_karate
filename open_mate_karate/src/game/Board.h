@@ -6,7 +6,6 @@
 #include "Creature.h"
 #include "Field.h"
 
-
 class Board
 {
 public:
