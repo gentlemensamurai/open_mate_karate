@@ -170,6 +170,7 @@
     <ClCompile Include="src\game\Creature.cpp" />
     <ClCompile Include="src\game\CreatureTurnQueue.cpp" />
     <ClCompile Include="src\game\Field.cpp" />
+    <ClCompile Include="src\game\Game.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +186,7 @@
     <ClInclude Include="src\game\Creature.h" />
     <ClInclude Include="src\game\CreatureTurnQueue.h" />
     <ClInclude Include="src\game\Field.h" />
+    <ClInclude Include="src\game\Game.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

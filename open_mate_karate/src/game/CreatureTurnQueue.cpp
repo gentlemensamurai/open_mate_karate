@@ -1,10 +1,19 @@
 #include "CreatureTurnQueue.h"
 
-CreatureTurnQueue::CreatureTurnQueue(const std::vector<std::shared_ptr<Creature>>& creatures)
+CreatureTurnQueue::CreatureTurnQueue
+(
+    const std::vector<std::shared_ptr<Creature>>& leftSideCreatures,
+    const std::vector<std::shared_ptr<Creature>>& rightSideCreatures
+)
     : creatureTurnQueue { },
       activeCreature { nullptr }
 {
-    for (auto i : creatures)
+    for (auto i : leftSideCreatures)
+    {
+        creatureTurnQueue.push(i);
+    }
+
+    for (auto i : rightSideCreatures)
     {
         creatureTurnQueue.push(i);
     }

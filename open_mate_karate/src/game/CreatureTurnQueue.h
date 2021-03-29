@@ -8,7 +8,11 @@
 class CreatureTurnQueue
 {
 public:
-    CreatureTurnQueue(const std::vector<std::shared_ptr<Creature>>& creatures);
+    CreatureTurnQueue
+    (
+        const std::vector<std::shared_ptr<Creature>>& leftSideCreatures,
+        const std::vector<std::shared_ptr<Creature>>& rightSideCreatures
+    );
     ~CreatureTurnQueue();
 
     std::shared_ptr<Creature> getActiveCreature();

@@ -82,6 +82,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\Board.h">
@@ -119,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="src\engine\Engine.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\Game.h">
+      <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

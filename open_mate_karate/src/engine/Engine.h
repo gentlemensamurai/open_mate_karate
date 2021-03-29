@@ -1,5 +1,5 @@
-#ifndef GAME_H
-#define GAME_H
+#ifndef ENGINE_H
+#define ENGINE_H
 
 #include "libs.h"
 #include "Camera.h"
@@ -71,4 +71,4 @@ private:
     void render();
 };
 
-#endif // GAME_H
+#endif // ENGINE_H

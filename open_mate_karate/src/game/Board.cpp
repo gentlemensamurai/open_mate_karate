@@ -1,9 +1,10 @@
 #include "Board.h"
 
 Board::Board(unsigned short boardWidth, unsigned short boardHeight)
-    : creatures { },
-      BOARD_WIDTH { boardWidth },
-      BOARD_HEIGHT { boardHeight }
+    : BOARD_WIDTH { boardWidth },
+      BOARD_HEIGHT { boardHeight },
+      creatures { }
+
 {
 
 }
@@ -45,6 +46,25 @@ std::shared_ptr<Creature> Board::getCreature(FieldCoord fieldCoord)
     {
         return nullptr;
     }
+}
+
+std::optional<FieldCoord> Board::getFieldCoord(std::shared_ptr<Creature> creature)
+{
+    std::optional<FieldCoord> result { std::nullopt };
+
+    if (creature != nullptr)
+    {
+        for (auto& i : creatures)
+        {
+            if (i.second.get() == creature.get())
+            {
+                result = i.first;
+                break;
+            }
+        }
+    }
+
+    return result;
 }
 
 void Board::moveCreature(FieldCoord sourcePoint, FieldCoord targetPoint)
