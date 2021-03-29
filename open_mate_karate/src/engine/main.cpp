@@ -5,15 +5,16 @@
 #include "Mesh.h"
 
 #include "../game/Board.h"
+#include "../game/CreatureTurnQueue.h"
 
 int main()
 {
-    Board board(20, 15);
+    std::vector<std::shared_ptr<Creature>> creatures;
+    creatures.push_back(std::make_shared<Creature>("Goblin"));
+    creatures.push_back(std::make_shared<Creature>("Orc"));
+    creatures.push_back(std::make_shared<Creature>("Minotaur"));
 
-    board.addCreature(FieldCoord(19, 5), std::make_shared<Creature>("Goblin"));
-    board.addCreature(FieldCoord(2, 2), std::make_shared<Creature>("Orc"));
-
-    board.moveCreature(FieldCoord(1, 1), FieldCoord(3, 3));
+    CreatureTurnQueue creatureTurnQueue(creatures);
 
     //Game game("Open Mate Karate", 1920, 1080, 3, 3, false, false);
     //game.run();

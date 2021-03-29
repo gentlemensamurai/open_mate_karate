@@ -81,6 +81,9 @@
     <ClCompile Include="src\game\Field.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="src\game\CreatureTurnQueue.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\Board.h">
@@ -114,6 +117,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="src\game\Field.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\game\CreatureTurnQueue.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>

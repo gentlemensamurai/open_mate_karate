@@ -169,6 +169,7 @@
     <ClCompile Include="src\engine\Texture2D.cpp" />
     <ClCompile Include="src\game\Board.cpp" />
     <ClCompile Include="src\game\Creature.cpp" />
+    <ClCompile Include="src\game\CreatureTurnQueue.cpp" />
     <ClCompile Include="src\game\Field.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -182,6 +183,7 @@
     <ClInclude Include="src\engine\Texture2D.h" />
     <ClInclude Include="src\game\Board.h" />
     <ClInclude Include="src\game\Creature.h" />
+    <ClInclude Include="src\game\CreatureTurnQueue.h" />
     <ClInclude Include="src\game\Field.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

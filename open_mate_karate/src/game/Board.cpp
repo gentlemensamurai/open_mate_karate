@@ -49,7 +49,8 @@ std::shared_ptr<Creature> Board::getCreature(FieldCoord fieldCoord)
 
 void Board::moveCreature(FieldCoord sourcePoint, FieldCoord targetPoint)
 {
-    if (sourcePoint.x < BOARD_WIDTH && sourcePoint.y < BOARD_HEIGHT && targetPoint.x < BOARD_WIDTH && targetPoint.y < BOARD_HEIGHT)
+    if (sourcePoint.x < BOARD_WIDTH && sourcePoint.y < BOARD_HEIGHT &&
+        targetPoint.x < BOARD_WIDTH && targetPoint.y < BOARD_HEIGHT)
     {
         std::shared_ptr<Creature> creature { getCreature(sourcePoint) };
 

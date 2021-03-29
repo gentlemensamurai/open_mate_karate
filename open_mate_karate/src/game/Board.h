@@ -2,8 +2,7 @@
 #define BOARD_H
 
 #include <map>
-#include <optional>
-#include <iostream>
+#include <memory>
 #include "Creature.h"
 #include "Field.h"
 
