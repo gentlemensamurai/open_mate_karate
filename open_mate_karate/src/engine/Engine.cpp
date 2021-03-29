@@ -1,6 +1,6 @@
-#include "Game.h"
+#include "Engine.h"
 
-void Game::setFramebufferSizeCallback(GLFWwindow* window, int width, int height)
+void Engine::setFramebufferSizeCallback(GLFWwindow* window, int width, int height)
 {
     //windowWidth = width;
     //windowHeight = height;
@@ -8,7 +8,7 @@ void Game::setFramebufferSizeCallback(GLFWwindow* window, int width, int height)
     glViewport(0, 0, width, height);
 }
 
-void Game::setScrollCallback(GLFWwindow* window, double deltaX, double deltaY)
+void Engine::setScrollCallback(GLFWwindow* window, double deltaX, double deltaY)
 {
     //double fieldOfView { camera.getFieldOfView() + deltaY * ZOOM_SENSITIVITY };
     //fieldOfView = glm::clamp(fieldOfView, 1.0, 120.0);
@@ -16,7 +16,7 @@ void Game::setScrollCallback(GLFWwindow* window, double deltaX, double deltaY)
     //camera.setFieldOfView((float)fieldOfView);
 }
 
-Game::Game
+Engine::Engine
 (
     const std::string& title,
     const int width,
@@ -57,7 +57,7 @@ Game::Game
     initOpenGlOptions();
 }
 
-Game::~Game()
+Engine::~Engine()
 {
     for (size_t i { 0 }; i < models.size(); i++)
     {
@@ -68,7 +68,7 @@ Game::~Game()
     glfwTerminate();
 }
 
-void Game::run()
+void Engine::run()
 {
     // SHADER PROGRAM
     basicShader.loadShaders("shaders/basic_dir.vert", "shaders/basic_dir.frag");
@@ -132,7 +132,7 @@ void Game::run()
     }
 }
 
-void Game::showFps()
+void Engine::showFps()
 {
     static double previousSeconds { 0.0 };
     static int frameCount { 0 };
@@ -157,7 +157,7 @@ void Game::showFps()
     frameCount++;
 }
 
-void Game::initGlfw()
+void Engine::initGlfw()
 {
     if (!glfwInit())
     {
@@ -166,7 +166,7 @@ void Game::initGlfw()
     }
 }
 
-void Game::initWindow()
+void Engine::initWindow()
 {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, VERSION_MAJOR);
@@ -207,7 +207,7 @@ void Game::initWindow()
     glfwSetCursorPos(window, framebufferWidth / 2.0f, framebufferHeight / 2.0);
 }
 
-void Game::initGlew()
+void Engine::initGlew()
 {
     glewExperimental = GL_TRUE;
 
@@ -218,7 +218,7 @@ void Game::initGlew()
     }
 }
 
-void Game::initOpenGlOptions()
+void Engine::initOpenGlOptions()
 {
     glEnable(GL_DEPTH_TEST);
 
@@ -232,7 +232,7 @@ void Game::initOpenGlOptions()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void Game::update(double deltaTime)
+void Engine::update(double deltaTime)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
@@ -298,7 +298,7 @@ void Game::update(double deltaTime)
     }
 }
 
-void Game::render()
+void Engine::render()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

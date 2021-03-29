@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "Engine.h"
 #include "ShaderProgram.h"
 #include "Texture2D.h"
 #include "Camera.h"
@@ -25,8 +25,8 @@ int main()
 
     activeCreature->attack(board.getCreature(FieldCoord(5, 5)));
 
-    //Game game("Open Mate Karate", 1920, 1080, 3, 3, false, false);
-    //game.run();
+    //Engine engine("Open Mate Karate", 1920, 1080, 3, 3, false, false);
+    //engine.run();
 
     return 0;
 }

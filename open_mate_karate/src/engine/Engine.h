@@ -9,13 +9,13 @@
 #include "Material.h"
 #include "Model.h"
 
-class Game
+class Engine
 {
 public:
     static void setFramebufferSizeCallback(GLFWwindow* window, int width, int height);
     static void setScrollCallback(GLFWwindow* window, double deltaX, double deltaY);
 
-    Game
+    Engine
     (
         const std::string& title,
         const int width,
@@ -25,7 +25,7 @@ public:
         bool fullscreen,
         bool resizable
     );
-    virtual ~Game();
+    virtual ~Engine();
 
     void run();
 

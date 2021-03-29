@@ -54,9 +54,6 @@
     <ClCompile Include="src\engine\Camera.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\Game.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\main.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -84,15 +81,15 @@
     <ClCompile Include="src\game\CreatureTurnQueue.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\Engine.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\Board.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\Camera.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
-    <ClInclude Include="src\engine\Game.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\libs.h">
@@ -121,6 +118,9 @@
     </ClInclude>
     <ClInclude Include="src\game\CreatureTurnQueue.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\Engine.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
