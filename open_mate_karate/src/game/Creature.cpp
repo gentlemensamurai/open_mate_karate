@@ -36,17 +36,41 @@ Creature::~Creature()
 
 }
 
-void Creature::attack(const std::shared_ptr<Creature> defender)
+void Creature::attack(std::shared_ptr<Creature> defender)
 {
-    short damage { CREATURE_STATS.ATTACK - defender->CREATURE_STATS.ARMOR };
+    if(!isAlive()) return;
+
+    short attackDamage { calculateDamage(defender->CREATURE_STATS) };
     
-    if (damage > 0)
+    if (attackDamage > 0)
     {
-        defender->currentHp = defender->currentHp - damage;
+        defender->setCurrentHp(defender->getCurrentHp() - attackDamage);
+    }
+
+    short counterDamage { defender->calculateDamage(CREATURE_STATS) };
+
+    if (counterDamage > 0)
+    {
+        setCurrentHp(getCurrentHp() - counterDamage);
     }
 }
 
 const short Creature::getCurrentHp() const
 {
     return currentHp;
+}
+
+void Creature::setCurrentHp(const short hp)
+{
+    currentHp = hp;
+}
+
+bool Creature::isAlive()
+{
+    return currentHp > 0;
+}
+
+short Creature::calculateDamage(const CreatureStats defenderStats)
+{
+    return CREATURE_STATS.ATTACK - defenderStats.ARMOR;
 }

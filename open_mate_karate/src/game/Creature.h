@@ -35,12 +35,16 @@ public:
     );
     ~Creature();
 
-    void attack(const std::shared_ptr<Creature> defender);
-    const short getCurrentHp() const;
+    void attack(std::shared_ptr<Creature> defender);
 
 private:
     const CreatureStats CREATURE_STATS;
     short currentHp;
+
+    const short getCurrentHp() const;
+    void setCurrentHp(const short hp);
+    bool isAlive();
+    short calculateDamage(const CreatureStats defenderStats);
 };
 
 #endif // CREATURE_H
