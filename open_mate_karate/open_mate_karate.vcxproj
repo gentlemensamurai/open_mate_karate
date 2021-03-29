@@ -161,7 +161,6 @@
   <ItemGroup>
     <ClCompile Include="src\engine\Camera.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
-    <ClCompile Include="src\engine\main.cpp" />
     <ClCompile Include="src\engine\Material.cpp" />
     <ClCompile Include="src\engine\Mesh.cpp" />
     <ClCompile Include="src\engine\Model.cpp" />
@@ -171,6 +170,7 @@
     <ClCompile Include="src\game\Creature.cpp" />
     <ClCompile Include="src\game\CreatureTurnQueue.cpp" />
     <ClCompile Include="src\game\Field.cpp" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\Camera.h" />

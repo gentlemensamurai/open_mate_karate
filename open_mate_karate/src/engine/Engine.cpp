@@ -305,10 +305,7 @@ void Engine::render()
     view = camera.getViewMatrix();
     projection = glm::perspective(glm::radians(camera.getFieldOfView()), static_cast<float>(framebufferWidth) / static_cast<float>(framebufferHeight), 0.1f, 100.0f);
 
-    glm::vec3 viewPos;
-    viewPos.x = camera.getPos().x;
-    viewPos.y = camera.getPos().y;
-    viewPos.z = camera.getPos().z;
+    glm::vec3 viewPos {camera.getPos() };
 
     glm::vec3 lightPos = camera.getPos();
     glm::vec3 lightColor(1.0f, 1.0f, 1.0f);

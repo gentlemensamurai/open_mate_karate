@@ -1,11 +1,7 @@
-#include "Engine.h"
-#include "ShaderProgram.h"
-#include "Texture2D.h"
-#include "Camera.h"
-#include "Mesh.h"
+#include "engine/Engine.h"
 
-#include "../game/Board.h"
-#include "../game/CreatureTurnQueue.h"
+#include "game/Board.h"
+#include "game/CreatureTurnQueue.h"
 
 int main()
 {

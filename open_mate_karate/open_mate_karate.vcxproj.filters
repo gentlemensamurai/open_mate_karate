@@ -54,9 +54,6 @@
     <ClCompile Include="src\engine\Camera.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\main.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="src\engine\Material.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -84,6 +81,7 @@
     <ClCompile Include="src\engine\Engine.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\game\Board.h">
