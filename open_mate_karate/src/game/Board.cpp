@@ -81,3 +81,13 @@ void Board::moveCreature(FieldCoord sourcePoint, FieldCoord targetPoint)
         }
     }
 }
+
+void Board::moveCreature(std::shared_ptr<Creature> creature, FieldCoord targetPoint)
+{
+    std::optional<FieldCoord> sourcePoint { getFieldCoord(creature) };
+
+    if (sourcePoint.has_value())
+    {
+        moveCreature(sourcePoint.value(), targetPoint);
+    }
+}

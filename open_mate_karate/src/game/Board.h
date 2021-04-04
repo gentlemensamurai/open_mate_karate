@@ -20,6 +20,7 @@ public:
     std::shared_ptr<Creature> getCreature(FieldCoord fieldCoord);
     std::optional<FieldCoord> getFieldCoord(std::shared_ptr<Creature> creature);
     void moveCreature(FieldCoord sourcePoint, FieldCoord targetPoint);
+    void moveCreature(std::shared_ptr<Creature> creature, FieldCoord targetPoint);
 
 private:
     std::map<FieldCoord, std::shared_ptr<Creature>> creatures;

@@ -16,6 +16,8 @@ public:
     ~Game();
 
     void move(FieldCoord targetField);
+    void pass();
+    void attack(FieldCoord attackedField);
 
 private:
     Board board;

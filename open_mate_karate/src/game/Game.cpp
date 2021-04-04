@@ -18,7 +18,17 @@ Game::~Game()
 
 void Game::move(FieldCoord targetField)
 {
-    //board.moveCreature(creatureTurnQueue.getActiveCreature(), )
+    board.moveCreature(creatureTurnQueue.getActiveCreature(), targetField);
+}
+
+void Game::pass()
+{
+    creatureTurnQueue.next();
+}
+
+void Game::attack(FieldCoord attackedField)
+{
+    creatureTurnQueue.getActiveCreature()->attack(board.getCreature(attackedField));
 }
 
 void Game::putCreaturesToBoard
