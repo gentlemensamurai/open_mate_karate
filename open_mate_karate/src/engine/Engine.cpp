@@ -44,7 +44,7 @@ Engine::Engine
       model(1.0f),
       view(1.0f),
       projection(1.0f),
-      camera(glm::vec3(0.0f, 3.0f, 10.0f)),
+      camera(glm::vec3(0.0f, 15.0f, 0.0f), glm::radians(180.0f), glm::radians(-30.0f)),
       meshes(),
       textures(),
       materials(),
@@ -203,8 +203,8 @@ void Engine::initWindow()
     glfwSetFramebufferSizeCallback(window, setFramebufferSizeCallback);
     glfwSetScrollCallback(window, setScrollCallback);
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPos(window, framebufferWidth / 2.0f, framebufferHeight / 2.0);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetCursorPos(window, framebufferWidth / 2.0f, framebufferHeight / 2.0);
 }
 
 void Engine::initGlew()
@@ -266,17 +266,17 @@ void Engine::update(double deltaTime)
     float yaw { static_cast<float>(framebufferWidth / 2 - mouseX) * MOUSE_SENSITIVITY };
     float pitch { static_cast<float>(framebufferHeight / 2 - mouseY) * MOUSE_SENSITIVITY };
 
-    camera.rotate(yaw, pitch);
+    //camera.rotate(yaw, pitch);
 
-    glfwSetCursorPos(window, framebufferWidth / 2.0, framebufferHeight / 2.0);
+    //glfwSetCursorPos(window, framebufferWidth / 2.0, framebufferHeight / 2.0);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
-        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getLook());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * glm::vec3(0.0f, 0.0f, -1.0f));
     }
     else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
-        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * -camera.getLook());
+        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * glm::vec3(0.0f, 0.0f, 1.0f));
     }
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -288,14 +288,14 @@ void Engine::update(double deltaTime)
         camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getRight());
     }
 
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-    {
-        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * -camera.getUp());
-    }
-    else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-    {
-        camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getUp());
-    }
+    //if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    //{
+    //    camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * -camera.getUp());
+    //}
+    //else if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    //{
+    //    camera.move(CAMERA_MOVE_SPEED * (float)deltaTime * camera.getUp());
+    //}
 }
 
 void Engine::render()

@@ -8,13 +8,13 @@ Camera::Camera(glm::vec3 pos, float yaw, float pitch)
       pos(pos),
       targetPos(glm::vec3(0.0f, 0.0f, 0.0f)),
       up(glm::vec3(0.0f, 1.0f, 0.0f)),
-      look(glm::vec3(0.0f, 0.0f, 0.0f)), // ?
+      look(glm::vec3(0.0f, 0.0f, 0.0f)),
       right(glm::vec3(0.0f, 0.0f, 0.0f)),
       yaw(yaw),
       pitch(pitch),
       fieldOfView(defaultFieldOfView)
 {
-    
+    updateCameraVectors();
 }
 
 void Camera::setPosition(const glm::vec3& pos)
